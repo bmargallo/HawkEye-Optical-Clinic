@@ -1,0 +1,78 @@
+/* Quick, low-key transitions for regular same-site page navigation. */
+html.page-transition-enter body {
+  animation: pageTransitionEnter .22s ease-out both;
+}
+
+html.page-transition-leave::before {
+  position: fixed;
+  z-index: 2147482000;
+  inset: 0;
+  background: rgba(8, 11, 18, .28);
+  content: "";
+  opacity: 0;
+  pointer-events: none;
+  animation: pageTransitionLeave .16s ease-out forwards;
+}
+
+@keyframes pageTransitionEnter {
+  from { opacity: .82; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pageTransitionLeave {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Reused hawk reveal when a requested transition reaches its destination. */
+.login-arrival-cover { display: none; }
+
+html.login-arrival .login-arrival-cover {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483000;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  contain: paint;
+  background: #05060a;
+  pointer-events: none;
+  animation: loginArrivalReveal .5s cubic-bezier(.3,.7,.2,1) forwards;
+  will-change: opacity;
+}
+
+html.login-arrival .login-arrival-cover::before {
+  position: absolute;
+  inset: -25%;
+  background: radial-gradient(ellipse at center, rgba(237,43,32,.22), rgba(237,43,32,.06) 28%, transparent 58%);
+  content: "";
+  pointer-events: none;
+}
+
+html.login-arrival .login-arrival-cover img {
+  display: block;
+  width: clamp(320px, 35vmax, 520px);
+  height: auto;
+  transform: translate3d(0,-3vh,0) scale(5.5);
+  transform-origin: center;
+  animation: loginArrivalHawk .5s cubic-bezier(.3,.7,.2,1) forwards;
+  backface-visibility: hidden;
+  will-change: transform, opacity;
+}
+
+@keyframes loginArrivalReveal {
+  from { opacity: 1; }
+  to { opacity: 0; visibility: hidden; }
+}
+
+@keyframes loginArrivalHawk {
+  from { opacity: 1; transform: translate3d(0,-3vh,0) scale(5.5); }
+  to { opacity: 0; transform: translate3d(0,-4vh,0) scale(6); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.page-transition-enter body { animation: none !important; }
+  html.page-transition-leave::before { animation: none !important; }
+  html.login-arrival .login-arrival-cover,
+  html.login-arrival .login-arrival-cover img { animation: none !important; }
+}

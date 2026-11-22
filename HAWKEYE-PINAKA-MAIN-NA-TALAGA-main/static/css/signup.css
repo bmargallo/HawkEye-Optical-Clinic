@@ -1,0 +1,403 @@
+/* Signup-only styling aligned with the clinic's login and recovery screens. */
+body.auth-signup {
+  --signup-text: #24242b;
+  --signup-muted: #625f69;
+  --signup-link: #b01f17;
+  --signup-link-hover: #8f1c16;
+  --signup-card-border: rgba(200, 35, 26, .24);
+  --signup-card-shadow: 0 0 0 1px rgba(255, 255, 255, .7) inset, 0 24px 80px rgba(31, 42, 62, .2), 0 0 32px rgba(200, 35, 26, .08);
+  --signup-field-text: #29252a;
+  --signup-placeholder: #77717a;
+  --signup-field-border: rgba(96, 78, 83, .28);
+  --signup-field-bg: linear-gradient(110deg, rgba(255, 255, 255, .88), rgba(255, 255, 255, .7));
+  --signup-field-shadow: inset 0 1px 0 rgba(255, 255, 255, .82), 0 0 16px rgba(81, 145, 231, .07);
+  --signup-focus-border: #c8231a;
+  --signup-focus-shadow: 0 0 0 3px rgba(200, 35, 26, .12), 0 0 22px rgba(82, 145, 231, .16);
+  --signup-action-bg: linear-gradient(105deg, #ed2b20 0%, #b91e18 55%, #df3025 100%);
+  --signup-action-border: #c8231a;
+  --signup-action-shadow: 0 8px 25px rgba(156, 31, 25, .25), inset 0 1px 0 rgba(255, 255, 255, .22);
+  --signup-action-hover-shadow: 0 11px 30px rgba(156, 31, 25, .34), inset 0 1px 0 rgba(255, 255, 255, .24);
+  --signup-toggle-bg: rgba(255, 255, 255, .72);
+  --signup-toggle-border: rgba(111, 118, 135, .28);
+  --signup-toggle-text: #625f69;
+  --signup-google-bg: rgba(255, 255, 255, .78);
+  --signup-google-text: #24242b;
+  --signup-google-border: rgba(91, 101, 119, .22);
+  position: relative;
+  display: grid;
+  min-height: 100vh;
+  min-height: 100svh;
+  place-items: center;
+  box-sizing: border-box;
+  margin: 0;
+  padding: clamp(76px, 9vh, 100px) 20px 36px;
+  overflow-x: hidden;
+  background:
+    radial-gradient(ellipse at 15% 16%, rgba(32, 77, 136, .25), transparent 42%),
+    radial-gradient(ellipse at 88% 80%, rgba(22, 46, 82, .36), transparent 48%),
+    radial-gradient(ellipse at 50% 48%, rgba(69, 29, 42, .22), transparent 56%),
+    linear-gradient(145deg, #111722 0%, #080a10 54%, #120c13 100%);
+  color: #f5f7ff;
+}
+
+:root[data-theme="dark"] body.auth-signup {
+  --signup-text: #f5f7ff;
+  --signup-muted: #aeb7c8;
+  --signup-link: #ff5968;
+  --signup-link-hover: #ff8290;
+  --signup-card-border: rgba(255, 105, 123, .5);
+  --signup-card-shadow: 0 0 0 1px rgba(255, 255, 255, .035) inset, 0 24px 80px rgba(0, 0, 0, .55), 0 0 30px rgba(44, 112, 205, .16), 0 0 24px rgba(217, 39, 60, .14);
+  --signup-field-text: #f6f8fd;
+  --signup-placeholder: #a8afbd;
+  --signup-field-border: rgba(220, 230, 246, .24);
+  --signup-field-bg: linear-gradient(110deg, rgba(255, 255, 255, .085), rgba(255, 255, 255, .035));
+  --signup-field-shadow: inset 0 1px 0 rgba(255, 255, 255, .07), 0 0 15px rgba(83, 150, 239, .09);
+  --signup-focus-border: rgba(133, 186, 255, .9);
+  --signup-focus-shadow: 0 0 0 3px rgba(75, 145, 237, .17), 0 0 24px rgba(75, 145, 237, .22);
+  --signup-action-bg: linear-gradient(105deg, #ff3349 0%, #bc172b 55%, #f22b40 100%);
+  --signup-action-border: #ff5868;
+  --signup-action-shadow: 0 8px 25px rgba(218, 28, 49, .32), inset 0 1px 0 rgba(255, 255, 255, .18);
+  --signup-action-hover-shadow: 0 11px 31px rgba(233, 34, 55, .42), inset 0 1px 0 rgba(255, 255, 255, .2);
+  --signup-toggle-bg: rgba(9, 13, 22, .72);
+  --signup-toggle-border: rgba(199, 214, 240, .24);
+  --signup-toggle-text: #d9e4f6;
+  --signup-google-bg: rgba(255, 255, 255, .95);
+  --signup-google-text: #24242b;
+  --signup-google-border: rgba(255, 255, 255, .42);
+}
+
+body.auth-signup::before {
+  position: fixed;
+  z-index: 0;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 15% 16%, rgba(224, 237, 255, .93), transparent 44%),
+    radial-gradient(ellipse at 88% 80%, rgba(230, 239, 251, .96), transparent 50%),
+    linear-gradient(145deg, #f4f7fc 0%, #edf1f7 54%, #f6eeee 100%);
+  content: "";
+  opacity: 1;
+  pointer-events: none;
+  transition: opacity .85s cubic-bezier(.2, .7, .2, 1);
+}
+
+:root[data-theme="dark"] body.auth-signup::before { opacity: 0; }
+:root[data-theme="dark"] body.auth-signup input[type="date"] { color-scheme: dark; }
+:root:not([data-theme="dark"]) body.auth-signup input[type="date"] { color-scheme: light; }
+
+body.auth-signup .theme-toggle {
+  z-index: 5;
+  border-color: var(--signup-toggle-border);
+  background: var(--signup-toggle-bg);
+  color: var(--signup-toggle-text);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .12);
+  backdrop-filter: blur(12px);
+  transition: color .65s ease, background-color .65s ease, border-color .65s ease, box-shadow .65s ease;
+}
+
+body.auth-signup .theme-toggle:hover { border-color: #5b9cf0; color: var(--signup-text); }
+
+body.auth-signup .signup-card {
+  position: relative;
+  z-index: 1;
+  isolation: isolate;
+  width: min(100%, 900px);
+  max-width: 900px;
+  margin: auto;
+  padding: clamp(26px, 4vw, 42px);
+  border: 1px solid var(--signup-card-border);
+  border-radius: 24px;
+  background: linear-gradient(145deg, rgba(19, 22, 31, .9), rgba(8, 10, 16, .86) 62%, rgba(20, 14, 21, .88));
+  box-shadow: var(--signup-card-shadow);
+  color: var(--signup-text);
+  backdrop-filter: blur(22px) saturate(125%);
+  transition: color .65s ease, border-color .65s ease, box-shadow .65s ease;
+}
+
+body.auth-signup .signup-card::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(145deg, rgba(255, 255, 255, .94), rgba(248, 250, 255, .89) 62%, rgba(231, 239, 250, .94));
+  content: "";
+  opacity: 1;
+  pointer-events: none;
+  transition: opacity .75s cubic-bezier(.2, .7, .2, 1);
+}
+
+:root[data-theme="dark"] body.auth-signup .signup-card::before { opacity: 0; }
+
+body.auth-signup .signup-card > .brand-lockup {
+  display: flex;
+  justify-content: center;
+  margin: 0 auto 20px;
+  color: var(--signup-text);
+}
+
+body.auth-signup .signup-card .brand-name small { color: var(--signup-muted); }
+
+body.auth-signup .signup-card > h1 {
+  margin: 0 0 10px;
+  color: var(--signup-text);
+  font-size: clamp(30px, 4vw, 38px);
+  line-height: 1.1;
+  text-align: center;
+  letter-spacing: -.035em;
+  text-wrap: balance;
+  transition: color .65s ease;
+}
+
+body.auth-signup .signup-card > p.muted {
+  max-width: 62ch;
+  margin: 0 auto 22px;
+  color: var(--signup-muted);
+  font-size: 15px;
+  text-align: center;
+  transition: color .65s ease;
+}
+
+body.auth-signup .signup-form-card,
+body.auth-signup .signup-google-card {
+  margin: 22px 0 0;
+  padding: clamp(19px, 3vw, 28px);
+  border: 1px solid rgba(221, 229, 243, .14);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, .035);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .045), 0 12px 30px rgba(0, 0, 0, .12);
+  transition: border-color .65s ease, background .65s ease, box-shadow .65s ease;
+}
+
+:root:not([data-theme="dark"]) body.auth-signup .signup-form-card,
+:root:not([data-theme="dark"]) body.auth-signup .signup-google-card {
+  border-color: rgba(88, 101, 123, .16);
+  background: rgba(255, 255, 255, .4);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .75), 0 12px 30px rgba(46, 58, 78, .06);
+}
+
+body.auth-signup .signup-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px 20px;
+}
+
+body.auth-signup .signup-field { min-width: 0; }
+body.auth-signup .signup-password-field { grid-column: 1 / -1; }
+
+body.auth-signup .signup-field > label {
+  display: block;
+  margin: 0 0 8px;
+  color: var(--signup-text);
+  font-size: 14px;
+  transition: color .65s ease;
+}
+
+body.auth-signup .signup-control {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  min-height: 54px;
+  padding: 0 16px;
+  border: 1px solid var(--signup-field-border);
+  border-radius: 999px;
+  background: var(--signup-field-bg);
+  box-shadow: var(--signup-field-shadow);
+  transition: background .65s ease, border-color .65s ease, box-shadow .65s ease;
+}
+
+body.auth-signup .signup-control:focus-within {
+  border-color: var(--signup-focus-border);
+  box-shadow: var(--signup-focus-shadow);
+}
+
+body.auth-signup .signup-control > svg {
+  flex: 0 0 19px;
+  width: 19px;
+  height: 19px;
+  margin-right: 12px;
+  fill: none;
+  stroke: var(--signup-muted);
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: stroke .65s ease;
+}
+
+body.auth-signup .signup-control input {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  min-height: 52px;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  box-shadow: none;
+  color: var(--signup-field-text);
+  font: inherit;
+  font-size: 15px;
+  transition: color .65s ease;
+}
+
+body.auth-signup .signup-control input::placeholder { color: var(--signup-placeholder); }
+body.auth-signup .signup-control input:focus-visible { outline: none; }
+body.auth-signup .signup-control input[type="date"] { color-scheme: inherit; }
+body.auth-signup .signup-control input[type="date"]::-webkit-calendar-picker-indicator { opacity: .78; cursor: pointer; }
+body.auth-signup .signup-control .pw-field { flex: 1 1 auto; min-width: 0; }
+body.auth-signup .signup-control .pw-field input { padding-right: 44px; }
+body.auth-signup .signup-control .pw-toggle { color: var(--signup-muted); }
+body.auth-signup .signup-control .pw-toggle:hover { color: var(--signup-text); }
+
+body.auth-signup .signup-hint {
+  grid-column: 1 / -1;
+  margin: -7px 2px 0;
+  color: var(--signup-muted);
+  font-size: 13px;
+  line-height: 1.5;
+  transition: color .65s ease;
+}
+
+body.auth-signup .signup-consent {
+  align-items: flex-start;
+  margin: 21px 2px 8px;
+  color: var(--signup-muted);
+  font-size: 13px;
+  line-height: 1.55;
+  transition: color .65s ease;
+}
+
+body.auth-signup .signup-consent input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  min-height: 18px;
+  margin-top: 2px;
+  accent-color: #d1272b;
+}
+
+body.auth-signup .signup-consent a {
+  color: var(--signup-link);
+  font-weight: 700;
+  text-underline-offset: 3px;
+  transition: color .65s ease;
+}
+
+body.auth-signup .signup-consent a:hover { color: var(--signup-link-hover); }
+
+body.auth-signup .signup-submit {
+  width: 100%;
+  min-height: 54px;
+  margin-top: 18px;
+  border: 1px solid var(--signup-action-border);
+  border-radius: 999px;
+  background: var(--signup-action-bg);
+  box-shadow: var(--signup-action-shadow);
+  color: #fff;
+  font-size: 17px;
+  transition: transform .18s ease, box-shadow .65s ease, filter .2s ease, background .65s ease, border-color .65s ease;
+}
+
+body.auth-signup .signup-submit:hover { transform: translateY(-1px); box-shadow: var(--signup-action-hover-shadow); filter: brightness(1.06); }
+body.auth-signup .signup-submit:active { transform: translateY(1px) scale(.995); }
+body.auth-signup .signup-submit:focus-visible,
+body.auth-signup .signup-google-btn:focus-visible,
+body.auth-signup a:focus-visible { outline: 3px solid rgba(102, 166, 247, .58); outline-offset: 3px; }
+
+body.auth-signup .signup-expiry {
+  margin: 13px 2px 0;
+  color: var(--signup-muted);
+  font-size: 13px;
+  line-height: 1.5;
+  text-align: center;
+  transition: color .65s ease;
+}
+
+body.auth-signup .signup-google-card h2 {
+  margin: 0 0 8px;
+  color: var(--signup-text);
+  font-size: 19px;
+  text-align: center;
+  transition: color .65s ease;
+}
+
+body.auth-signup .signup-google-card > p {
+  max-width: 66ch;
+  margin: 0 auto 15px;
+  color: var(--signup-muted);
+  font-size: 13px;
+  text-align: center;
+  transition: color .65s ease;
+}
+
+body.auth-signup .signup-google-card .signup-consent { margin-top: 12px; }
+
+body.auth-signup .signup-google-btn {
+  min-height: 52px;
+  margin: 14px 0 0;
+  border: 1px solid var(--signup-google-border);
+  border-radius: 999px;
+  background: var(--signup-google-bg);
+  box-shadow: 0 7px 20px rgba(0, 0, 0, .12);
+  color: var(--signup-google-text);
+  transition: transform .18s ease, background .65s ease, border-color .65s ease, box-shadow .2s ease;
+}
+
+body.auth-signup .signup-google-btn:hover { transform: translateY(-1px); box-shadow: 0 10px 26px rgba(0, 0, 0, .19); }
+body.auth-signup .signup-google-btn .g-logo { width: 20px; height: 20px; }
+
+body.auth-signup .signup-existing {
+  margin: 24px 0 0;
+  color: var(--signup-muted);
+  text-align: center;
+  transition: color .65s ease;
+}
+
+body.auth-signup .signup-existing a,
+body.auth-signup .signup-back {
+  color: var(--signup-link);
+  font-weight: 700;
+  text-decoration: none;
+  text-underline-offset: 3px;
+  transition: color .65s ease;
+}
+
+body.auth-signup .signup-existing a:hover,
+body.auth-signup .signup-back:hover { color: var(--signup-link-hover); text-decoration: underline; }
+
+body.auth-signup .signup-back {
+  display: block;
+  width: fit-content;
+  margin: 12px auto 0;
+  text-align: center;
+}
+
+body.auth-signup .flash { border-radius: 12px; }
+
+@media (max-width: 700px) {
+  body.auth-signup { padding: 72px 14px 24px; }
+  body.auth-signup .theme-toggle.floating { top: 12px; right: 12px; }
+  body.auth-signup .signup-card { padding: 24px 18px; border-radius: 20px; }
+  body.auth-signup .signup-card > .brand-lockup { margin-bottom: 17px; }
+  body.auth-signup .signup-card > h1 { font-size: 31px; }
+  body.auth-signup .signup-form-card,
+  body.auth-signup .signup-google-card { padding: 18px 15px; }
+  body.auth-signup .signup-fields { grid-template-columns: minmax(0, 1fr); gap: 15px; }
+  body.auth-signup .signup-password-field,
+  body.auth-signup .signup-hint { grid-column: auto; }
+  body.auth-signup .signup-hint { margin: -5px 2px 0; }
+  body.auth-signup .signup-control { min-height: 52px; padding: 0 14px; }
+  body.auth-signup .signup-control input { min-height: 50px; font-size: 16px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.auth-signup::before,
+  body.auth-signup .theme-toggle,
+  body.auth-signup .signup-card,
+  body.auth-signup .signup-card::before,
+  body.auth-signup .signup-card h1,
+  body.auth-signup .signup-card p,
+  body.auth-signup .signup-card label,
+  body.auth-signup .signup-control,
+  body.auth-signup .signup-control svg,
+  body.auth-signup .signup-control input,
+  body.auth-signup .signup-card button,
+  body.auth-signup .signup-card a { transition: none !important; }
+}

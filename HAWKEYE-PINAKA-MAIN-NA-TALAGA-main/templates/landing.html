@@ -1,0 +1,993 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HawkEyes Optical Clinic Makati · Patient portal and clinic information</title>
+<meta name="description" content="HawkEye Optical Clinic: see your prescription, track your visits and get follow-up reminders from one patient portal.">
+<meta property="og:title" content="HawkEyes Optical Clinic Makati">
+<meta property="og:description" content="Contact HawkEyes Optical Clinic Makati or use the patient portal to keep up with prescriptions, appointments and follow-ups.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="{{ url_for('static', filename='img/hawkeyes-logo.png', _external=True) }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/tokens.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/custom-cursor.css') }}">
+<script src="{{ url_for('static', filename='js/custom-cursor.js') }}" defer></script>
+<style>
+
+
+:root{--bg:var(--canvas);--bg2:var(--surface-2);--muted:var(--text-2);--accent-dark:var(--accent-hover);--field:var(--ink-solid);--field-ink:var(--ink-solid-text);--field-soft:#aab2be}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:84px}
+body{margin:0;background:var(--bg);color:var(--text);font:17px/1.6 var(--font);-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:var(--font);font-weight:700;margin:0;letter-spacing:-.03em;line-height:1.02}
+p{margin:0}a{color:inherit;text-decoration:none}
+:focus-visible{outline:3px solid var(--focus);outline-offset:3px}
+.wrap{padding:0 clamp(20px,4vw,48px);max-width:1440px;margin:0 auto}
+
+/* buttons: flat, square */
+.btn{display:inline-flex;align-items:center;min-height:50px;padding:0 26px;background:var(--bg2);color:var(--text);font-weight:700;font-size:16px;border:0;border-radius:var(--r-1);cursor:pointer;transition:transform .2s,background .2s}
+.btn:hover{transform:translateY(-2px)}
+.btn.primary{background:var(--accent);color:var(--on-accent)}
+.btn.primary:hover{background:var(--accent-dark)}
+.btn.sm{min-height:42px;padding:0 18px;font-size:15px}
+.actions{display:flex;gap:12px;flex-wrap:wrap}
+.hero .actions {
+    justify-content: flex-start;
+    gap: 14px;
+    transform: none;
+}
+.hero .actions .btn {
+    min-height: 56px;
+    padding-inline: 28px;
+    border: 1px solid transparent;
+    border-radius: 999px;
+    box-shadow: 0 8px 22px rgba(23, 59, 99, .12);
+    transition: transform .2s ease, background .2s ease, box-shadow .2s ease;
+}
+.hero .actions .btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 26px rgba(23, 59, 99, .2);
+}
+.hero .actions .btn:not(.primary) {
+    background: var(--surface);
+    color: var(--text);
+    border-color: var(--line);
+}
+.hero .actions .btn:not(.primary):hover {
+    background: var(--bg2);
+    border-color: var(--accent);
+}
+
+/* nav: plain bar */
+.nav {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: transparent;
+    box-shadow: none;
+    border: none;
+}
+.nav .wrap{display:flex;align-items:center;gap:22px;height:72px}
+.logo-link{display:flex;align-items:center;gap:12px;font-weight:700;font-size:17px;opacity:1;visibility:visible;transition:opacity .24s ease,visibility 0s linear}
+.nav-logo-hidden .logo-link{opacity:0;visibility:hidden;pointer-events:none;transition:opacity .24s ease,visibility 0s linear .24s}
+.logo-mark{height:32px;width:auto;display:block}
+.links{display:flex;gap:28px;margin-left:auto}
+.links a{padding:8px 0}.links a:hover{color:var(--accent)}
+.nav .push{margin-left:auto}
+.links+.theme-toggle{margin-left:0}
+
+/* hero */
+.hero{padding:clamp(8px,1.5vw,20px) 0 clamp(48px,6vw,88px)}
+.hero .wrap{display:grid;grid-template-columns:minmax(0,1fr);align-items:center}
+.hero-copy{width:min(100%,820px);margin-top:clamp(-40px,-4vh,-24px);padding:clamp(20px,3vw,40px);border-radius:24px;background:linear-gradient(120deg,rgba(10,23,40,.78),rgba(10,23,40,.48));backdrop-filter:blur(4px);color:#fff}
+.hero h1{max-width:12ch;font-size:clamp(40px,7.4vw,96px);text-shadow:0 2px 18px rgba(0,0,0,.28)}
+.hero .lede{margin:22px 0 30px;max-width:42em;font-size:clamp(18px,1.5vw,21px);text-shadow:0 1px 10px rgba(0,0,0,.35)}
+.chart{background:var(--field);color:var(--field-ink);padding:clamp(28px,4vw,56px) clamp(16px,3vw,40px);display:flex;flex-direction:column;align-items:center;gap:clamp(14px,2vw,26px);font:700 12px/1 var(--font);aspect-ratio:4/5;justify-content:center;overflow:hidden}
+.chart span{display:block;letter-spacing:.32em;margin-right:-.32em;line-height:1;white-space:nowrap}
+.chart .r1{font-size:clamp(70px,9vw,140px)}.chart .r2{font-size:clamp(54px,6.4vw,100px)}.chart .r3{font-size:clamp(40px,4.4vw,70px)}
+.chart .r4{font-size:clamp(28px,3vw,48px)}.chart .r5{font-size:clamp(20px,2.1vw,34px)}.chart .r6{font-size:clamp(14px,1.5vw,24px)}
+.js .chart span{filter:blur(10px);opacity:.25;transition:filter 1.1s ease,opacity 1.1s ease}
+.js .chart.in span{filter:none;opacity:1}
+.chart.in .r2{transition-delay:.15s}.chart.in .r3{transition-delay:.3s}.chart.in .r4{transition-delay:.45s}.chart.in .r5{transition-delay:.6s}.chart.in .r6{transition-delay:.75s}
+
+/* sections */
+section{padding:clamp(64px,8vw,112px) 0}
+.services,.portal,.faq-section,.about,.contact{background:var(--canvas)}
+.split{display:grid;grid-template-columns:5fr 7fr;gap:clamp(32px,5vw,96px);align-items:start}
+.split>.head{position:sticky;top:110px}
+h2{font-size:clamp(34px,4.8vw,68px)}
+.head p{margin-top:24px;max-width:24em}
+.section-intro{max-width:760px;margin-bottom:36px}
+.section-intro p{margin-top:18px;max-width:42em;color:var(--text-2)}
+
+.services-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.service-card{min-height:190px;padding:24px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-2);transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease}
+.service-card:hover{transform:translateY(-4px);border-color:var(--accent-line);box-shadow:var(--shadow-float)}
+.service-card svg{width:30px;height:30px;margin-bottom:30px;color:var(--accent-text);fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.service-card h3{font-size:22px}
+.service-note{margin-top:20px;color:var(--text-2)}
+
+.uses{display:grid;gap:12px}
+.use{background:var(--bg2);padding:clamp(24px,3vw,40px);transition:transform .22s ease,box-shadow .22s ease}
+.use:hover{transform:translateY(-3px);box-shadow:var(--shadow-float)}
+.use svg{display:block;width:30px;height:30px;margin-bottom:18px;color:var(--accent-text);fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;transition:transform .18s ease}
+.use:hover svg{transform:translateY(-2px)}
+.use h3{font-size:clamp(26px,2.6vw,36px);margin-bottom:12px}
+.use p{max-width:32em}
+
+/* how it works: field of colour, steps shrink like chart lines */
+.how{background:var(--field);color:var(--field-ink)}
+.how h2{margin-bottom:clamp(40px,6vw,88px);max-width:14em}
+.how ol{list-style:none;margin:0;padding:0;display:grid;gap:clamp(28px,4vw,56px)}
+.how li{display:grid;grid-template-columns:1fr 1fr;gap:clamp(16px,4vw,64px);align-items:end}
+.how li h3{font-size:clamp(34px,6.4vw,92px)}
+.how li:nth-child(2) h3{font-size:clamp(30px,5vw,68px)}
+.how li:nth-child(3) h3{font-size:clamp(26px,3.6vw,50px)}
+.how li p{color:var(--field-soft);max-width:26em;padding-bottom:.4em}
+
+.faq{display:grid;gap:12px}
+details{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-2)}
+summary{cursor:pointer;list-style:none;padding:24px clamp(20px,3vw,36px);font:700 clamp(20px,2vw,26px)/1.25 var(--font);display:flex;justify-content:space-between;gap:20px}
+summary::-webkit-details-marker{display:none}
+summary:after{content:'+';font-family:var(--font);font-weight:400;font-size:28px;line-height:1;flex:none;transition:transform .25s}
+details[open] summary:after{transform:rotate(45deg)}
+details p{padding:0 clamp(20px,3vw,36px) 28px;max-width:38em}
+
+.cta{background:var(--accent);color:var(--on-accent)}
+.cta .wrap{display:grid;grid-template-columns:7fr 5fr;gap:clamp(32px,5vw,96px);align-items:end}
+.cta h2{font-size:clamp(40px,7vw,104px)}
+.cta p{margin-bottom:28px;font-size:19px}
+.cta .btn{background:#fff;color:#12151a}.cta .btn:hover{background:#f4f5f7}
+.cta .btn.ghost{background:#12151a;color:#fff}.cta .btn.ghost:hover{background:#000}
+
+.about{background:var(--surface-2)}
+.about-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:clamp(24px,5vw,64px);align-items:start}
+.about-copy p{max-width:48em;color:var(--text-2)}
+.about-copy p+p{margin-top:18px}
+.about-aside{padding:clamp(24px,3vw,36px);background:var(--surface);border:1px solid var(--line);border-radius:var(--r-2)}
+.about-aside h3{font-size:23px;margin-bottom:12px}
+.about-aside p{color:var(--text-2)}
+
+.contact-layout{display:grid;grid-template-columns:1.2fr .8fr;gap:20px;align-items:stretch}
+.contact-details{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.contact-card,.contact-callout{padding:24px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-2)}
+.contact-card h3{font-size:17px;margin-bottom:8px}
+.contact-card p,.contact-card a{color:var(--text-2);overflow-wrap:anywhere}
+.contact-card a{color:var(--accent-text);text-decoration:underline;text-underline-offset:3px}
+.contact-card a:hover{color:var(--accent-hover)}
+.contact-card a.contact-icon-link,.footer-column a.footer-contact-link{display:inline-flex;align-items:flex-start;gap:9px}
+.contact-callout .btn.contact-icon-link{align-items:center;gap:9px}
+.contact-icon-link svg,.contact-social svg,.footer-contact-link svg,.footer-social-link svg{width:18px;height:18px;flex:none;margin-top:2px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:transform .18s ease,color .18s ease}
+.contact-icon-link:hover svg,.contact-social a:hover svg,.footer-contact-link:hover svg,.footer-social-link:hover svg{transform:translateY(-1px)}
+.facebook-icon{fill:currentColor!important;stroke:none!important;color:#1877f2}
+.contact-callout{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;background:var(--accent-tint);border-color:var(--accent-line)}
+.contact-callout h3{font-size:clamp(24px,3vw,34px);margin-bottom:12px}
+.contact-callout p{color:var(--text-2);margin-bottom:20px}
+.contact-callout .btn{background:var(--accent);color:var(--on-accent)}
+.contact-social{margin-top:22px}
+.contact-social a{font-weight:700;color:var(--accent-text);text-decoration:underline;text-underline-offset:3px}
+.contact-social a,.footer-column a.footer-social-link{display:inline-flex;align-items:center;gap:8px}
+
+/* footer */
+footer{padding:64px 0 28px;background:var(--canvas);border-top:1px solid var(--line)}
+.footer-grid{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:32px}
+.footer-brand{font-size:24px;font-weight:700;letter-spacing:-.03em;margin-bottom:12px}
+.footer-column p.footer-brand{font-size:24px;color:var(--text)}
+.footer-column h2{font-size:15px;letter-spacing:0;margin-bottom:14px}
+.footer-column p,.footer-column a{font-size:15px;color:var(--text-2)}
+.footer-column p+p{margin-top:7px}
+.footer-column a{display:block;width:fit-content;margin:8px 0}
+.footer-column a.quiet{margin-top:16px;color:var(--text-3);font-size:14px}
+.footer-column a:hover{color:var(--accent-text);text-decoration:underline;text-underline-offset:3px}
+.footer-legal{margin-top:36px;padding-top:18px;border-top:1px solid var(--line);font-size:14px;color:var(--text-2)}
+.disc{max-width:34em;font-size:15px;color:var(--muted)}
+.fl{display:flex;flex-wrap:wrap;gap:12px 28px;font-size:16px}
+.fl a:hover{color:var(--accent)}
+.fl .quiet{color:var(--muted);font-size:14px}
+.credit{margin-top:40px;font-size:14px;color:var(--muted)}
+
+/* theme toggle + logo swap */
+.theme-toggle{width:42px;height:42px;flex:none;display:inline-grid;place-items:center;padding:0;border:0;border-radius:50%;background:var(--bg2);color:var(--text);cursor:pointer}
+.theme-toggle svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.theme-toggle .i-sun{display:none}
+:root[data-theme="dark"] .theme-toggle .i-sun{display:block}
+:root[data-theme="dark"] .theme-toggle .i-moon{display:none}
+.logo-dark{display:none!important}
+:root[data-theme="dark"] .logo-dark{display:block!important}
+:root[data-theme="dark"] .logo-light{display:none!important}
+
+/* entrance: only hidden when script is running */
+.js .rv{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease}
+.js .rv.in{opacity:1;transform:none}
+.js .hero .hero-copy.rv{transform:translateY(16px);transition:opacity .7s ease,transform .7s ease}
+.js .hero .hero-copy.rv.in{transform:translateY(0)}
+.js .uses .use.rv{transform:translateY(18px);transition:opacity .65s ease,transform .65s ease}
+.js .uses .use.rv.in{transform:translateY(0)}
+.js .uses .use.rv.in:nth-child(2){transition-delay:.1s}
+.js .uses .use.rv.in:nth-child(3){transition-delay:.2s}
+.js .uses .use.rv.in:nth-child(4){transition-delay:.3s}
+.js .uses .use.rv.in:hover{transform:translateY(-3px)}
+.js .how li.rv:nth-child(odd){transform:translateX(-18px);transition:opacity .65s ease,transform .65s ease}
+.js .how li.rv:nth-child(even){transform:translateX(18px);transition:opacity .65s ease,transform .65s ease}
+.js .how li.rv.in{transform:translateX(0)}
+.js .about .rv{transform:translateX(-18px);transition:opacity .7s ease,transform .7s ease}
+.js .about .rv.in{transform:translateX(0)}
+.js .services .service-card.rv{transform:scale(.96);transition:opacity .65s ease,transform .65s ease,box-shadow .22s ease,border-color .22s ease}
+.js .services .service-card.rv.in{transform:scale(1)}
+.js .services .service-card.rv.in:hover{transform:translateY(-4px) scale(1)}
+.js .faq-section .rv{transform:translateY(16px);transition:opacity .7s ease,transform .7s ease}
+.js .faq-section .rv.in{transform:translateY(0)}
+.js .contact .rv{transform:translateY(20px);transition:opacity .7s ease,transform .7s ease}
+.js .contact .rv.in{transform:translateY(0)}
+.js .cta .rv{transform:translateY(6px) scale(.985);transition:opacity .7s ease,transform .7s ease}
+.js .cta .rv.in{transform:translateY(0) scale(1)}
+.js .kinetic-word{display:inline-block;white-space:nowrap;user-select:text}
+.js .kinetic-char{display:inline-block;opacity:0;transform:translate3d(var(--kinetic-x),var(--kinetic-y),0) rotate(var(--kinetic-rotation)) scale(.97);user-select:text}
+.js .rv.in .kinetic-char,.js .rv.in.kinetic-text .kinetic-char{animation:kineticFlyIn .72s cubic-bezier(.2,.78,.28,1.16) both;animation-delay:var(--kinetic-delay,0ms)}
+@keyframes kineticFlyIn{
+  0%{opacity:0;transform:translate3d(var(--kinetic-x),var(--kinetic-y),0) rotate(var(--kinetic-rotation)) scale(.97)}
+  76%{opacity:1;transform:translate3d(0,-2px,0) rotate(0) scale(1.015)}
+  100%{opacity:1;transform:translate3d(0,0,0) rotate(0) scale(1)}
+}
+@media (prefers-reduced-motion:reduce){
+  .js .rv,.js .chart span{opacity:1;transform:none;filter:none;transition:none}
+  .js .hero .hero-copy.rv,.js .uses .use.rv,.js .how li.rv,.js .about .rv,.js .services .service-card.rv,.js .faq-section .rv,.js .contact .rv,.js .cta .rv{opacity:1;transform:none;transition:none}
+  .js .uses .use.rv.in:hover,.js .services .service-card.rv.in:hover{transform:none}
+  .js .kinetic-char{opacity:1;transform:none;animation:none!important}
+  html{scroll-behavior:auto}.btn,.service-card,.use,.use svg,.contact-icon-link svg,.contact-social svg,.footer-contact-link svg,.footer-social-link svg{transition:none}
+  .service-card:hover{transform:none;box-shadow:none}
+  .use:hover,.use:hover svg{transform:none;box-shadow:none}
+  .logo-link{transition:none}
+}
+@media(max-width:900px){
+  .links{display:none}.nav .theme-toggle{margin-left:auto}
+  .hero .wrap,.split,.cta .wrap,.about-grid,.contact-layout{grid-template-columns:1fr}
+  .services-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .split>.head{position:static}
+  .chart{aspect-ratio:auto;padding:36px 16px}
+  .how li{grid-template-columns:1fr;gap:8px}
+}
+@media(max-width:640px){section{padding:clamp(56px,12vw,76px) 0}.hero{padding-bottom:64px}.lede{margin:24px 0 28px}.actions .btn{flex:1 1 100%;justify-content:center}.services-grid,.contact-details,.footer-grid{grid-template-columns:1fr}.service-card{min-height:0}.service-card svg{margin-bottom:20px}.footer-legal{margin-top:24px}}
+@media(max-width:480px){.logo-link .name{display:none}.nav .btn.sm.ghost{display:none}}
+
+/* =================================
+   HAWKEYE COLLAPSIBLE EYE NAVIGATION
+================================= */
+
+.nav .wrap {
+    position: relative;
+}
+
+.nav-eye-toggle {
+    position: relative;
+    z-index: 110;
+    width: 48px;
+    height: 48px;
+    margin-left: auto;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    background: #ffffff;
+    color: #173b63;
+    border: 1px solid #dce5ed;
+    border-radius: 14px;
+    cursor: pointer;
+    flex-shrink: 0;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+.nav-eye-toggle svg {
+    display: block;
+    width: 26px;
+    height: 26px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.nav-eye-toggle:hover {
+    background: var(--accent);
+    color: white;
+    transform: scale(1.05);
+}
+
+.nav-eye-toggle svg {
+    width: 25px;
+    height: 25px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.nav-panel[hidden] {
+    display: none !important;
+}
+
+.nav-panel {
+    position: absolute;
+    top: calc(100% - 2px);
+    right: clamp(20px, 4vw, 48px);
+    z-index: 100;
+    width: min(310px, calc(100vw - 40px));
+    max-height: calc(100vh - 92px);
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    overflow-y: auto;
+    background: var(--bg2);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    box-shadow: 0 14px 40px rgba(0, 0, 0, .13);
+    animation: navReveal .22s ease;
+}
+
+.nav-panel .links {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin: 0;
+}
+
+.nav-panel .links a {
+    display: block;
+    padding: 12px 14px;
+    border-radius: 9px;
+    font-size: 16px;
+    font-weight: 600;
+    transition: background .2s ease;
+}
+
+.nav-panel .links a:hover {
+    background: var(--bg);
+    color: var(--accent);
+}
+
+.nav-panel-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+}
+
+.nav-panel-actions .theme-toggle {
+    margin: 0 0 5px;
+}
+
+.nav-panel-actions .btn {
+    width: 100%;
+    justify-content: center;
+}
+
+@keyframes navReveal {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 900px) {
+    .nav-panel .links {
+        display: flex;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .nav-panel {
+        animation: none;
+    }
+
+    .nav-eye-toggle {
+        transition: none;
+    }
+}
+
+/* Animated Gateway Background */
+
+body {
+    margin: 0;
+    background: transparent;
+    isolation: isolate;
+}
+
+.gateway-bg-video {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -2;
+    pointer-events: none;
+}
+
+.gateway-bg-video.gateway-bg-video-inactive {
+    opacity: 0;
+}
+
+.gateway-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(255, 244, 228, 0.12);
+    z-index: -1;
+    pointer-events: none;
+}
+
+/* Short HawkEyes flight into the existing patient login route. */
+.login-flight-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 2147483000;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    contain: paint;
+    background: #05060a;
+    opacity: 0;
+    pointer-events: none;
+    animation: loginFlightShade 1.2s cubic-bezier(.22,.7,.18,1) forwards;
+}
+
+.login-flight-overlay::before {
+    position: absolute;
+    inset: -20%;
+    background: radial-gradient(ellipse at center, rgba(237,43,32,.34), rgba(237,43,32,.08) 23%, transparent 53%);
+    content: "";
+    opacity: 0;
+    transform: scale(.35);
+    animation: loginFlightEnergy 1.2s ease-out forwards;
+}
+
+.login-flight-overlay img {
+    position: relative;
+    width: clamp(320px, 35vmax, 520px);
+    height: auto;
+    opacity: 0;
+    transform: translate3d(0,0,0) scale(.12) rotate(-2deg);
+    transform-origin: center;
+    animation: loginHawkApproach 1.2s cubic-bezier(.22,.72,.15,1) forwards;
+    backface-visibility: hidden;
+    will-change: transform, opacity;
+}
+
+@keyframes loginFlightShade {
+    0% { opacity: 0; }
+    18% { opacity: 1; }
+    100% { opacity: 1; }
+}
+
+@keyframes loginFlightEnergy {
+    0% { opacity: 0; transform: scale(.35); }
+    18% { opacity: .95; transform: scale(.8); }
+    38% { opacity: .65; transform: scale(1); }
+    100% { opacity: .18; transform: scale(1.5); }
+}
+
+@keyframes loginHawkApproach {
+    0% { opacity: 0; transform: translate3d(0,0,0) scale(.12) rotate(-2deg); }
+    20% { opacity: 1; transform: translate3d(0,0,0) scale(.34) rotate(0); }
+    39% { opacity: 1; transform: translate3d(0,0,0) scale(.36); }
+    72% { opacity: 1; transform: translate3d(0,-1.2vh,0) scale(1.4); }
+    100% { opacity: 1; transform: translate3d(0,-3vh,0) scale(5.5); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .login-flight-overlay,
+    .login-flight-overlay::before,
+    .login-flight-overlay img { animation: none !important; }
+}
+
+</style>
+{% include '_favicon.html' %}{% include '_theme.html' %}<script nonce="{{ csp_nonce() }}">document.documentElement.setAttribute('data-theme','light');</script>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="logo-link" href="{{ url_for('index') }}" aria-label="HawkEye Optical Clinic home"><img class="logo-mark logo-light" src="{{ url_for('static', filename='img/logotrans.gif') }}" alt=""><img class="logo-mark logo-dark" src="{{ url_for('static', filename='img/hawkeyes-mark-dark.png') }}" alt="" aria-hidden="true"><span class="name">HawkEye Optical Clinic</span></a>
+        <button
+      class="nav-eye-toggle"
+      id="navEyeToggle"
+      type="button"
+      aria-label="Open navigation"
+      aria-expanded="false"
+      aria-controls="siteNavigation"
+    >
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/>
+        <circle cx="12" cy="12" r="3"/>
+      </svg>
+    </button>
+
+    <div class="nav-panel" id="siteNavigation" hidden>
+      <nav class="links" aria-label="Page sections">
+        <a href="#home">Home</a>
+        <a href="#services">Services</a>
+        <a href="#portal">Patient portal</a>
+        <a href="#how">How it works</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+        <a href="#faq">Questions</a>
+      </nav>
+
+      <div class="nav-panel-actions">
+        {% with tt='' %}{% include '_theme_toggle.html' %}{% endwith %}
+        <a class="btn sm ghost" data-login-transition href="{{ url_for('patient_login') }}">
+          Patient login
+        </a>
+        <a class="btn sm primary" data-hawk-signup-transition href="{{ url_for('signup') }}">
+          Create account
+        </a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="hero" id="home">
+    <div class="wrap">
+      <div class="hero-copy rv">
+        <h1>Your eye care, in clear focus.</h1>
+        <p class="lede">See your prescription, track your visits, get a reminder before your follow-up, and message your clinic, all from this website. Request a visit and the clinic confirms it.</p>
+        <div class="actions">
+          <a class="btn primary" data-login-transition href="{{ url_for('patient_login') }}">Patient login</a>
+          <a class="btn" data-hawk-signup-transition href="{{ url_for('signup') }}">Create account</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="services" class="services">
+    <div class="wrap">
+      <div class="section-intro rv">
+        <h2>Services and products</h2>
+        <p>Contact the clinic to confirm availability and pricing for these categories.</p>
+      </div>
+      <div class="services-grid">
+        <article class="service-card rv">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>
+          <h3>Eye examinations</h3>
+        </article>
+        <article class="service-card rv">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6.5" cy="13" r="4.5"/><circle cx="17.5" cy="13" r="4.5"/><path d="M11 13h2M2 12l-1-2m21 2 1-2"/></svg>
+          <h3>Eyeglasses</h3>
+        </article>
+        <article class="service-card rv">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8h18M5 8l1 11h12l1-11M8 8V5h8v3"/></svg>
+          <h3>Frames</h3>
+        </article>
+        <article class="service-card rv">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c3 4 6 7.1 6 11a6 6 0 0 1-12 0c0-3.9 3-7 6-11Z"/><circle cx="12" cy="14" r="2"/></svg>
+          <h3>Contact lenses</h3>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="portal" class="portal">
+    <div class="wrap split">
+      <div class="head rv">
+        <h2>Everything after the exam, in one place.</h2>
+        <p>Your records and schedule live in one secure portal, so nothing slips between visits.</p>
+      </div>
+      <div class="uses">
+        <article class="use rv"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v5h5M9 12h7M9 16h7"/></svg><h3>Your prescription</h3><p>See the prescription details your clinic recorded, with your history kept in one organized place.</p></article>
+        <article class="use rv"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18M12 13v5M9.5 15.5h5"/></svg><h3>Request a visit</h3><p>Ask for a date and time. The clinic confirms it or suggests another. Your upcoming visits and follow-up dates are listed together.</p></article>
+        <article class="use rv"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9ZM10 21h4"/></svg><h3>Reminders that reach you</h3><p>Get appointment and follow-up notices, and confirm a follow-up with a single tap.</p></article>
+        <article class="use rv"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 0 0-14-5L4 8"/><path d="M4 4v4h4M4 13a8 8 0 0 0 14 5l2-2"/><path d="M20 20v-4h-4"/></svg><h3>Missed a visit? Ask for a new time</h3><p>Send a new request, or dismiss the notice. Your appointment history stays on record either way.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section id="how" class="how">
+    <div class="wrap">
+      <h2 class="rv">From check-up to check-in in three steps.</h2>
+      <ol>
+        <li class="rv"><h3>Create your account</h3><p>Sign up and confirm your email address. It takes about a minute.</p></li>
+        <li class="rv"><h3>Get seen, stay informed</h3><p>After your visit, the clinic updates your prescription and schedules any follow-up.</p></li>
+        <li class="rv"><h3>Follow through</h3><p>Get a reminder, confirm it, and request a new time if you need one.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="about" class="about">
+    <div class="wrap about-grid">
+      <div class="about-copy rv">
+        <h2>Care that stays connected.</h2>
+        <p>HawkEyes Optical Clinic Makati welcomes questions about clinic services, pricing, and visiting in person. Contact the clinic directly or visit during opening hours.</p>
+        <p>For patients using the online portal, recorded prescriptions, appointment requests, follow-ups, and messages can be managed in one place. The clinic confirms visit requests.</p>
+      </div>
+      <aside class="about-aside rv" aria-label="What to expect">
+        <h3>What to expect</h3>
+        <p>For information before a visit, call or email the clinic. For in-person inquiries, visit during the opening hours listed below. Portal appointment requests are confirmed by the clinic.</p>
+      </aside>
+    </div>
+  </section>
+
+  <section id="faq" class="faq-section">
+    <div class="wrap split">
+      <div class="head rv"><h2>Questions patients ask.</h2></div>
+      <div class="faq rv">
+        <details><summary>Is my information private?</summary><p>Accounts are email-verified, passwords can be reset by email and every form is protected against forged requests. Only you and your clinic team can see your record.</p></details>
+        <details><summary>What if I can’t make my appointment?</summary><p>Send a new request from your portal or message the clinic, and staff will confirm another time. You can also dismiss the notice. Your appointment history stays on record.</p></details>
+        <details><summary>Do I need an account?</summary><p>An account lets you view your prescription, appointments and reminders and message the clinic. Sign up and confirm your email address. The clinic confirms every visit: send a request in the portal, walk in, or call.</p></details>
+        <details><summary>Does the portal give medical advice?</summary><p>No. It supports clinic operations only. It does not diagnose, prescribe or check clinical accuracy. Your eye care professional does that at your visit.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" class="contact">
+    <div class="wrap">
+      <div class="section-intro rv">
+        <h2>Contact and location</h2>
+        <p>Have a question or prefer to speak with the clinic before creating an account? Call, email, or visit HawkEyes Optical Clinic Makati.</p>
+      </div>
+      <div class="contact-layout">
+        <div class="contact-details">
+          <article class="contact-card rv">
+            <h3>Visit</h3>
+            <p><a class="contact-icon-link" href="https://www.google.com/maps/dir/?api=1&amp;destination=1056%20A.P.%20Reyes%20Avenue%2C%20Makati%2C%201204%20Metro%20Manila" target="_blank" rel="noopener" aria-label="Get directions to HawkEyes Optical Clinic Makati in Google Maps"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg><span>1056 A.P. Reyes Avenue<br>Makati, 1204 Metro Manila</span></a></p>
+          </article>
+          <article class="contact-card rv">
+            <h3>Call</h3>
+            <p><a class="contact-icon-link" href="tel:+639810149735"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2A19.8 19.8 0 0 1 11.2 19a19.4 19.4 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.9a2 2 0 0 1-.5 2.1L8 8.9a16 16 0 0 0 6 6l1.2-1.3a2 2 0 0 1 2.1-.5c.9.3 1.9.6 2.9.7a2 2 0 0 1 1.8 2.1Z"/></svg><span>+63 981 014 9735</span></a></p>
+          </article>
+          <article class="contact-card rv">
+            <h3>Email</h3>
+            <p><a class="contact-icon-link" href="mailto:hawkeyesoptical@gmail.com"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg><span>hawkeyesoptical@gmail.com</span></a></p>
+          </article>
+          <article class="contact-card rv">
+            <h3>Opening hours</h3>
+            <p>Monday–Sunday<br>10:00 AM–7:00 PM</p>
+          </article>
+        </div>
+        <aside class="contact-callout rv" aria-labelledby="contact-call-title">
+          <h3 id="contact-call-title">Questions before you visit?</h3>
+          <p>Contact the clinic directly for inquiries and pricing. No patient account is needed to get in touch.</p>
+          <a class="btn contact-icon-link" href="tel:+639810149735"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2A19.8 19.8 0 0 1 11.2 19a19.4 19.4 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.9a2 2 0 0 1-.5 2.1L8 8.9a16 16 0 0 0 6 6l1.2-1.3a2 2 0 0 1 2.1-.5c.9.3 1.9.6 2.9.7a2 2 0 0 1 1.8 2.1Z"/></svg><span>Call the clinic</span></a>
+          <p class="contact-social"><a href="https://www.facebook.com/p/HawkEyes-Optical-Lab-61570347824917/" target="_blank" rel="noopener" aria-label="Visit HawkEyes Optical Lab on Facebook"><svg class="facebook-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M13.5 21v-8h2.7l.4-3h-3.1V8c0-.9.3-1.5 1.6-1.5h1.7V3.8c-.3 0-1.3-.1-2.4-.1-2.4 0-4.1 1.5-4.1 4.2V10H7.5v3h2.8v8z"/></svg><span>Find us on Facebook</span></a></p>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta">
+    <div class="wrap">
+      <h2 class="rv">Ready to see things clearly?</h2>
+      <div class="rv">
+        <p>Log in to view your prescription and appointments, create an account to get started, or contact the clinic directly with questions.</p>
+        <div class="actions">
+          <a class="btn" data-login-transition href="{{ url_for('patient_login') }}">Patient login</a>
+          <a class="btn ghost" data-hawk-signup-transition href="{{ url_for('signup') }}">Create an account</a>
+          <a class="btn" href="#contact">Contact the clinic</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-column">
+        <p class="footer-brand">HawkEyes Optical Clinic Makati</p>
+        <p>Clinic operations support. This system does not diagnose, prescribe or verify clinical accuracy.</p>
+      </div>
+      <div class="footer-column">
+        <h2>Contact</h2>
+        <p><a class="footer-contact-link" href="tel:+639810149735"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2A19.8 19.8 0 0 1 11.2 19a19.4 19.4 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.9a2 2 0 0 1-.5 2.1L8 8.9a16 16 0 0 0 6 6l1.2-1.3a2 2 0 0 1 2.1-.5c.9.3 1.9.6 2.9.7a2 2 0 0 1 1.8 2.1Z"/></svg><span>+63 981 014 9735</span></a></p>
+        <p><a class="footer-contact-link" href="mailto:hawkeyesoptical@gmail.com"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg><span>hawkeyesoptical@gmail.com</span></a></p>
+        <p><a class="footer-contact-link" href="https://www.google.com/maps/dir/?api=1&amp;destination=1056%20A.P.%20Reyes%20Avenue%2C%20Makati%2C%201204%20Metro%20Manila" target="_blank" rel="noopener" aria-label="Get directions to HawkEyes Optical Clinic Makati in Google Maps"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg><span>1056 A.P. Reyes Avenue, Makati, 1204 Metro Manila</span></a></p>
+        <p>Monday–Sunday, 10:00 AM–7:00 PM</p>
+      </div>
+      <nav class="footer-column" aria-label="Footer">
+        <h2>Explore</h2>
+        <a href="#home">Home</a>
+        <a href="#services">Services</a>
+        <a href="#portal">Patient portal</a>
+        <a href="#how">How it works</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+        <a href="#faq">Questions</a>
+        <a data-login-transition href="{{ url_for('patient_login') }}">Patient login</a>
+        <a data-hawk-signup-transition href="{{ url_for('signup') }}">Create an account</a>
+        <a href="{{ url_for('privacy') }}">Privacy notice</a>
+        <a href="{{ url_for('terms') }}">Terms and agreements</a>
+        <a class="footer-social-link" href="https://www.facebook.com/p/HawkEyes-Optical-Lab-61570347824917/" target="_blank" rel="noopener"><svg class="facebook-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M13.5 21v-8h2.7l.4-3h-3.1V8c0-.9.3-1.5 1.6-1.5h1.7V3.8c-.3 0-1.3-.1-2.4-.1-2.4 0-4.1 1.5-4.1 4.2V10H7.5v3h2.8v8z"/></svg><span>Facebook</span></a>
+        <a class="quiet" data-staff-login-transition href="{{ url_for('staff_login') }}">Clinic staff</a>
+      </nav>
+    </div>
+    <p class="footer-legal">&copy; 2026 HawkEyes Optical Clinic Makati</p>
+  </div>
+</footer>
+
+<script nonce="{{ csp_nonce() }}">
+(function(){
+  var d=document.documentElement;
+  if(!('IntersectionObserver' in window)||matchMedia('(prefers-reduced-motion: reduce)').matches){return;}
+  d.classList.add('js');
+  var kineticTargets=document.querySelectorAll('.hero h1,.services .section-intro h2,.portal .head h2,.how > .wrap > h2,.about-copy h2,.faq-section .head h2,.contact .section-intro h2,.cta h2');
+  kineticTargets.forEach(function(element,targetIndex){
+    var originalText=element.textContent;
+    if(!originalText.trim())return;
+    element.setAttribute('aria-label',originalText);
+    element.classList.add('kinetic-text');
+    var fragment=document.createDocumentFragment();
+    var charIndex=0;
+    originalText.split(/(\s+)/).forEach(function(part){
+      if(/^\s+$/.test(part)){fragment.appendChild(document.createTextNode(part));return;}
+      var word=document.createElement('span');
+      word.className='kinetic-word';
+      word.setAttribute('aria-hidden','true');
+      Array.from(part).forEach(function(character){
+        var pattern=(charIndex+targetIndex)%4;
+        var xOffsets=[-7,-3,4,7];
+        var yOffsets=targetIndex%3===0?[17,21,14,19]:targetIndex%3===1?[10,14,8,12]:[14,18,11,16];
+        var rotations=[-3,2,3,-2];
+        var letter=document.createElement('span');
+        letter.className='kinetic-char';
+        letter.textContent=character;
+        letter.style.setProperty('--kinetic-x',xOffsets[pattern]+'px');
+        letter.style.setProperty('--kinetic-y',yOffsets[pattern]+'px');
+        letter.style.setProperty('--kinetic-rotation',rotations[pattern]+'deg');
+        letter.style.setProperty('--kinetic-delay',Math.min(charIndex*14,560)+'ms');
+        word.appendChild(letter);
+        charIndex++;
+      });
+      fragment.appendChild(word);
+    });
+    element.replaceChildren(fragment);
+  });
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){var el=e.target;if(e.isIntersecting){if(!el.classList.contains('in'))el.classList.add('in');}else if(el.classList.contains('in')){el.classList.remove('in');}})},{threshold:.12});
+  document.querySelectorAll('.rv').forEach(function(e){io.observe(e);});
+  var c=document.getElementById('chart');if(c){requestAnimationFrame(function(){requestAnimationFrame(function(){c.classList.add('in')})});}
+})();
+</script>
+
+<script nonce="{{ csp_nonce() }}">
+(function () {
+    var transitioning = false;
+    var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    document.addEventListener('click', function (event) {
+        var link = event.target.closest && event.target.closest('a[data-staff-login-transition]');
+        if (!link || event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || link.target === '_blank' || link.hasAttribute('download') || reduceMotion) return;
+
+        event.preventDefault();
+        if (transitioning) return;
+        transitioning = true;
+
+        var destination = link.href;
+        document.documentElement.classList.add('login-flight-active');
+        document.querySelectorAll('.gateway-bg-video').forEach(function (video) { video.pause(); });
+
+        var overlay = document.createElement('div');
+        overlay.className = 'login-flight-overlay';
+        overlay.setAttribute('aria-hidden', 'true');
+
+        var hawk = document.createElement('img');
+        hawk.src = "{{ url_for('static', filename='img/logotrans.gif') }}";
+        hawk.alt = '';
+        overlay.appendChild(hawk);
+        document.body.appendChild(overlay);
+
+        var finished = false;
+        var navigationTimer = 0;
+        function navigate() {
+            if (finished) return;
+            finished = true;
+            window.clearTimeout(navigationTimer);
+            window.location.assign(destination);
+        }
+
+        navigationTimer = window.setTimeout(function () {
+            try { sessionStorage.setItem('hk-login-flight-arrival', '1'); } catch (_) {}
+            navigate();
+        }, 1200);
+        hawk.addEventListener('error', function () {
+            window.clearTimeout(navigationTimer);
+            navigationTimer = window.setTimeout(navigate, 500);
+        }, { once: true });
+    }, true);
+})();
+</script>
+
+<script nonce="{{ csp_nonce() }}">
+(function () {
+    const toggle = document.getElementById('navEyeToggle');
+    const panel = document.getElementById('siteNavigation');
+    const header = document.querySelector('.nav');
+
+    if (header) {
+        function updateLogoVisibility() {
+            header.classList.toggle('nav-logo-hidden', window.scrollY > 0);
+        }
+
+        window.addEventListener('scroll', updateLogoVisibility, { passive: true });
+        updateLogoVisibility();
+    }
+
+    if (!toggle || !panel) return;
+
+    function openMenu() {
+        panel.hidden = false;
+        toggle.setAttribute('aria-expanded', 'true');
+        toggle.setAttribute('aria-label', 'Close navigation');
+    }
+
+    function closeMenu() {
+        panel.hidden = true;
+        toggle.setAttribute('aria-expanded', 'false');
+        toggle.setAttribute('aria-label', 'Open navigation');
+    }
+
+    toggle.addEventListener('click', function () {
+        if (panel.hidden) {
+            openMenu();
+        } else {
+            closeMenu();
+        }
+    });
+
+    document.addEventListener('click', function (event) {
+        if (
+            !panel.hidden &&
+            !panel.contains(event.target) &&
+            !toggle.contains(event.target)
+        ) {
+            closeMenu();
+        }
+    });
+
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape' && !panel.hidden) {
+            closeMenu();
+            toggle.focus();
+        }
+    });
+
+    panel.querySelectorAll('a[href^="#"]').forEach(function (link) {
+        link.addEventListener('click', closeMenu);
+    });
+})();
+</script>
+
+<script nonce="{{ csp_nonce() }}">
+(function () {
+    var transitioning = false;
+    var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    document.addEventListener('click', function (event) {
+        var link = event.target.closest && event.target.closest('a[data-login-transition], a[data-hawk-signup-transition]');
+        if (!link || event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || link.target === '_blank' || link.hasAttribute('download') || reduceMotion) return;
+
+        if (transitioning) {
+            event.preventDefault();
+            return;
+        }
+
+        transitioning = true;
+        event.preventDefault();
+        document.documentElement.classList.add('login-flight-active');
+        document.querySelectorAll('.gateway-bg-video').forEach(function (video) { video.pause(); });
+
+        var overlay = document.createElement('div');
+        overlay.className = 'login-flight-overlay';
+        overlay.setAttribute('aria-hidden', 'true');
+        var hawk = document.createElement('img');
+        hawk.src = "{{ url_for('static', filename='img/logotrans.gif') }}";
+        hawk.alt = '';
+        overlay.appendChild(hawk);
+        document.body.appendChild(overlay);
+
+        var navigationTimer = window.setTimeout(function () {
+            try { sessionStorage.setItem('hk-login-flight-arrival', '1'); } catch (_) {}
+            window.location.assign(link.href);
+        }, 1200);
+        hawk.addEventListener('error', function () {
+            window.clearTimeout(navigationTimer);
+            window.setTimeout(function () { window.location.assign(link.href); }, 150);
+        }, { once: true });
+    }, true);
+})();
+</script>
+
+<img
+    id="customCursor"
+    src="{{ url_for('static', filename='img/cursoreye.gif') }}"
+    alt=""
+>
+<video class="gateway-bg-video" autoplay muted loop playsinline preload="auto">
+    <source
+        src="{{ url_for('static', filename='img/gateway-animation.mp4') }}"
+        type="video/mp4"
+    >
+</video>
+
+<video class="gateway-bg-video gateway-bg-video-inactive" muted playsinline preload="auto" aria-hidden="true">
+    <source
+        src="{{ url_for('static', filename='img/gateway-animation.mp4') }}"
+        type="video/mp4"
+    >
+</video>
+
+<script nonce="{{ csp_nonce() }}">
+(function () {
+    const videos = document.querySelectorAll('.gateway-bg-video');
+    if (videos.length < 2) return;
+
+    let active = videos[0];
+    let overlay = videos[1];
+    let transitionStarted = false;
+    const fadeDuration = 0.65;
+    active.loop = false;
+    overlay.loop = false;
+
+    function hide(video) {
+        video.pause();
+        video.classList.add('gateway-bg-video-inactive');
+        video.style.transition = 'none';
+        video.style.opacity = '0';
+    }
+
+    hide(overlay);
+
+    function beginCrossfade() {
+        if (transitionStarted || !active.duration) return;
+        transitionStarted = true;
+        overlay.currentTime = 0;
+        overlay.classList.remove('gateway-bg-video-inactive');
+        overlay.style.transition = 'none';
+        overlay.style.opacity = '0';
+        overlay.play().catch(function () {});
+    }
+
+    function syncCrossfade() {
+        if (document.documentElement.classList.contains('login-flight-active')) return;
+        const remaining = active.duration - active.currentTime;
+        if (Number.isFinite(remaining) && remaining <= fadeDuration) {
+            beginCrossfade();
+            if (transitionStarted) {
+                const progress = Math.max(0, Math.min(1, (fadeDuration - remaining) / fadeDuration));
+                overlay.style.opacity = String(progress);
+            }
+        }
+        requestAnimationFrame(syncCrossfade);
+    }
+
+    function onEnded() {
+        active.removeEventListener('ended', onEnded);
+        if (!transitionStarted) beginCrossfade();
+        const previous = active;
+        active = overlay;
+        overlay = previous;
+        active.style.transition = 'none';
+        active.style.opacity = '1';
+        active.classList.remove('gateway-bg-video-inactive');
+        hide(overlay);
+        transitionStarted = false;
+        active.play().catch(function () {});
+        watchActive();
+    }
+
+    function watchActive() {
+        active.addEventListener('ended', onEnded);
+    }
+
+    watchActive();
+    requestAnimationFrame(syncCrossfade);
+})();
+</script>
+
+<div class="gateway-overlay"></div>
+
+</body>
+</html>

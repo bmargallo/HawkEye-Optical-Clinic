@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Request Staff Access</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/recovery.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/staff_request.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/custom-cursor.css') }}">
+  {% include '_favicon.html' %}
+  {% with auth_theme_default='light' %}{% include '_auth_theme.html' %}{% endwith %}
+  <script src="{{ url_for('static', filename='js/ui.js') }}" defer></script>
+  <script src="{{ url_for('static', filename='js/custom-cursor.js') }}" defer></script>
+</head>
+<body class="auth-recovery auth-staff-request">
+  {% with tt='floating' %}{% include '_theme_toggle.html' %}{% endwith %}
+  <main class="auth recovery-card staff-request-card">
+    {% include '_brand.html' %}
+    <h1>Request Staff Access</h1>
+    <p class="muted">Access must be approved by an administrator. Use an email address you can access.</p>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, message in messages %}<div class="flash {{ category }}">{{ message }}</div>{% endfor %}
+    {% endwith %}
+    <div class="card">
+      <form method="post">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <label for="name">Full name</label>
+        <input id="name" name="name" autocomplete="name" required minlength="2">
+        <label for="role">Requested role</label>
+        <select id="role" name="role"><option>Clinic Staff</option><option>Optometrist</option></select>
+        <label for="email">Email</label>
+        <input id="email" type="email" name="email" autocomplete="email" required>
+        <label for="password">Password</label>
+        <input id="password" type="password" name="password" autocomplete="new-password" required minlength="8">
+        <button class="btn primary" type="submit">Submit Request</button>
+      </form>
+    </div>
+    <a class="staff-request-back" href="{{ url_for('staff_login') }}">&larr; Back to Staff Login</a>
+  </main>
+  <img id="customCursor" src="{{ url_for('static', filename='img/cursoreye.gif') }}" alt="">
+</body>
+</html>

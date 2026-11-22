@@ -1,0 +1,100 @@
+/* Staff request fields complement the shared recovery-page design. */
+body.auth-staff-request .staff-request-card { width: min(100%, 560px); max-width: 560px; }
+
+body.auth-staff-request .staff-request-card .card {
+  margin: 18px 0 12px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+body.auth-staff-request .staff-request-card form { display: grid; }
+
+body.auth-staff-request .staff-request-card label {
+  margin: 15px 0 7px;
+  color: var(--recovery-text);
+  font-size: 14px;
+  transition: color .65s ease;
+}
+
+body.auth-staff-request .staff-request-card label:first-of-type { margin-top: 0; }
+
+body.auth-staff-request .staff-request-card input[type="text"],
+body.auth-staff-request .staff-request-card input[type="email"],
+body.auth-staff-request .staff-request-card input[type="password"],
+body.auth-staff-request .staff-request-card select {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 52px;
+  padding: 0 17px;
+  border: 1px solid var(--recovery-field-border);
+  border-radius: 999px;
+  background: var(--recovery-field-bg);
+  box-shadow: var(--recovery-field-shadow);
+  color: var(--recovery-field-text);
+  font: inherit;
+  font-size: 16px;
+  transition: color .65s ease, background .65s ease, border-color .65s ease, box-shadow .65s ease;
+}
+
+body.auth-staff-request .staff-request-card select { appearance: none; }
+body.auth-staff-request .staff-request-card select option { background: #111722; color: #f5f7ff; }
+:root:not([data-theme="dark"]) body.auth-staff-request .staff-request-card select option { background: #fff; color: #24242b; }
+
+body.auth-staff-request .staff-request-card input:focus-visible,
+body.auth-staff-request .staff-request-card select:focus-visible {
+  border-color: var(--recovery-focus-border);
+  outline: 0;
+  box-shadow: var(--recovery-focus-shadow);
+}
+
+body.auth-staff-request .staff-request-card .pw-field { position: relative; }
+body.auth-staff-request .staff-request-card .pw-field input { padding-right: 48px; }
+body.auth-staff-request .staff-request-card .pw-toggle { color: var(--recovery-muted); }
+body.auth-staff-request .staff-request-card .pw-toggle:hover { color: var(--recovery-text); }
+
+body.auth-staff-request .staff-request-card form > button.btn.primary {
+  width: 100%;
+  min-height: 54px;
+  margin-top: 22px;
+  border: 1px solid var(--recovery-action-border);
+  border-radius: 999px;
+  background: var(--recovery-action-bg);
+  box-shadow: var(--recovery-action-shadow);
+  color: #fff;
+  font-size: 17px;
+  transition: transform .18s ease, box-shadow .65s ease, filter .2s ease, background .65s ease, border-color .65s ease;
+}
+
+body.auth-staff-request .staff-request-card form > button.btn.primary:hover { transform: translateY(-1px); box-shadow: var(--recovery-action-hover-shadow); filter: brightness(1.06); }
+body.auth-staff-request .staff-request-card form > button.btn.primary:active { transform: translateY(1px) scale(.995); }
+body.auth-staff-request .staff-request-card form > button.btn.primary:focus-visible { outline: 3px solid rgba(102, 166, 247, .55); outline-offset: 3px; }
+
+body.auth-staff-request .staff-request-back {
+  display: block;
+  width: fit-content;
+  margin: 18px auto 0;
+  color: var(--recovery-link);
+  font-weight: 700;
+  text-decoration: none;
+  transition: color .65s ease;
+}
+
+body.auth-staff-request .staff-request-back:hover { color: var(--recovery-link-hover); text-decoration: underline; text-underline-offset: 3px; }
+body.auth-staff-request .staff-request-card a:focus-visible { outline: 3px solid rgba(102, 166, 247, .55); outline-offset: 4px; border-radius: 4px; }
+
+@media (max-width: 600px) {
+  body.auth-staff-request .staff-request-card { padding: 24px 19px; }
+  body.auth-staff-request .staff-request-card input[type="text"],
+  body.auth-staff-request .staff-request-card input[type="email"],
+  body.auth-staff-request .staff-request-card input[type="password"],
+  body.auth-staff-request .staff-request-card select { min-height: 50px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.auth-staff-request .staff-request-card input,
+  body.auth-staff-request .staff-request-card select,
+  body.auth-staff-request .staff-request-card button,
+  body.auth-staff-request .staff-request-back { transition: none !important; }
+}

@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Resend verification</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/recovery.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/custom-cursor.css') }}">
+  {% include '_favicon.html' %}
+  {% with auth_theme_default='dark' %}{% include '_auth_theme.html' %}{% endwith %}
+  <script src="{{ url_for('static', filename='js/custom-cursor.js') }}" defer></script>
+</head>
+<body class="auth-recovery">
+  {% with tt='floating' %}{% include '_theme_toggle.html' %}{% endwith %}
+  <main class="auth recovery-card">
+    {% include '_brand.html' %}
+    <h1>Resend verification email</h1>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, message in messages %}<div class="flash {{ category }}">{{ message }}</div>{% endfor %}
+    {% endwith %}
+    <div class="card">
+      <form method="post">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <label for="email">Email address</label>
+        <input id="email" type="email" name="email" autocomplete="email" required>
+        <button class="btn primary" type="submit">Resend email</button>
+      </form>
+    </div>
+    <a class="recovery-back" href="{{ url_for('patient_login') }}">Back to login</a>
+  </main>
+  <img id="customCursor" src="{{ url_for('static', filename='img/cursoreye.gif') }}" alt="">
+</body>
+</html>

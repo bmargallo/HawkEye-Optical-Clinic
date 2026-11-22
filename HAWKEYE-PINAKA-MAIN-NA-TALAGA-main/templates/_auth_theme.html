@@ -1,0 +1,3 @@
+{% include '_page_transitions.html' %}
+<script nonce="{{ csp_nonce() }}">(function(){var t='{{ auth_theme_default|default("dark") }}';{% if auth_theme_honor_saved|default(true) %}try{var saved=localStorage.getItem('hk-theme');if(saved==='light'||saved==='dark')t=saved}catch(e){}{% endif %}document.documentElement.setAttribute('data-theme',t);document.documentElement.classList.add('has-js')})();</script>
+<script src="{{ url_for('static', filename='js/theme.js') }}" defer></script>

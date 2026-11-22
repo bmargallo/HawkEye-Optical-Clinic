@@ -1,0 +1,980 @@
+/* Patient login redesign, scoped so staff sign-in and other pages keep their styles. */
+body.app-patient {
+  min-height: 100vh;
+  background: #080a10;
+  color: #f5f7ff;
+}
+
+body.app-patient .auth-split {
+  position: relative;
+  display: block;
+  min-height: 100vh;
+  min-height: 100svh;
+  overflow-x: clip;
+  isolation: isolate;
+  background:
+    radial-gradient(ellipse at 15% 16%, rgba(32, 77, 136, .25), transparent 42%),
+    radial-gradient(ellipse at 88% 80%, rgba(22, 46, 82, .36), transparent 48%),
+    radial-gradient(ellipse at 50% 48%, rgba(69, 29, 42, .22), transparent 56%),
+    linear-gradient(145deg, #111722 0%, #080a10 54%, #120c13 100%);
+}
+
+/* Day-theme atmosphere crossfades over the existing night gradient. */
+body.app-patient .auth-split::before {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse at 15% 16%, rgba(224, 237, 255, .93), transparent 44%),
+    radial-gradient(ellipse at 88% 80%, rgba(230, 239, 251, .96), transparent 50%),
+    linear-gradient(145deg, #f4f7fc 0%, #edf1f7 54%, #f6eeee 100%);
+  content: "";
+  opacity: 1;
+  pointer-events: none;
+  transition: opacity .85s cubic-bezier(.2, .7, .2, 1);
+}
+
+:root[data-theme="dark"] body.app-patient .auth-split::before {
+  opacity: 0;
+}
+
+body.app-patient .auth-side {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: block;
+  overflow: hidden;
+  padding: 0;
+  background: transparent;
+  pointer-events: none;
+}
+
+body.app-patient .auth-side::before,
+body.app-patient .auth-side::after {
+  display: none;
+}
+
+body.app-patient .auth-side .brand-lockup,
+body.app-patient .auth-side .fine {
+  display: none;
+}
+
+body.app-patient .login-optics {
+  display: none;
+}
+
+body.app-patient .chart-mini {
+  position: absolute;
+  top: 50%;
+  right: clamp(20px, 5vw, 76px);
+  align-items: center;
+  gap: clamp(8px, 1.4vh, 14px);
+  color: #f1f2f5;
+  opacity: .72;
+  filter: blur(.35px);
+  text-shadow: 0 0 7px rgba(255, 255, 255, .9), 0 0 18px rgba(255, 255, 255, .48), 0 0 34px rgba(255, 255, 255, .2);
+  transform: translateY(-50%);
+  transform-origin: center;
+}
+
+body.app-patient .chart-mini .r1 { font-size: clamp(64px, 8vw, 112px); }
+body.app-patient .chart-mini .r2 { font-size: clamp(46px, 6vw, 82px); }
+body.app-patient .chart-mini .r3 { font-size: clamp(32px, 4.4vw, 60px); }
+body.app-patient .chart-mini .r4 { font-size: clamp(24px, 3.2vw, 44px); }
+body.app-patient .chart-mini .r5 { font-size: clamp(17px, 2.2vw, 30px); }
+body.app-patient .chart-mini .r6 { font-size: clamp(13px, 1.6vw, 22px); }
+
+body.app-patient .auth-main {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  min-height: 100svh;
+  align-items: center;
+  padding: 28px 20px 20px;
+}
+
+body.app-patient .auth-main .toolbar {
+  position: absolute;
+  top: 20px;
+  right: clamp(16px, 3vw, 36px);
+  min-height: 0;
+}
+
+body.app-patient .auth-main .theme-toggle {
+  border-color: rgba(199, 214, 240, .24);
+  background: rgba(9, 13, 22, .72);
+  color: #d9e4f6;
+  backdrop-filter: blur(12px);
+}
+
+body.app-patient .auth-main .theme-toggle:hover {
+  border-color: rgba(91, 160, 255, .72);
+  color: #fff;
+}
+
+body.app-patient .auth-main .auth {
+  width: min(100%, 520px);
+  max-width: 520px;
+  margin: auto;
+  padding: clamp(22px, 3vw, 34px);
+  border: 1px solid rgba(255, 105, 123, .56);
+  border-radius: 24px;
+  background:
+    linear-gradient(145deg, rgba(20, 20, 29, .88), rgba(8, 10, 16, .84) 62%, rgba(28, 11, 17, .86));
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, .035) inset, 0 24px 80px rgba(0, 0, 0, .55), 0 0 28px rgba(217, 39, 60, .19);
+  backdrop-filter: blur(22px) saturate(125%);
+  color: #f5f7ff;
+}
+
+body.app-patient {
+  --login-text: #252128;
+  --login-muted: #625d64;
+  --login-link: #b01f17;
+  --login-link-hover: #8f1c16;
+  --login-accent: #c8231a;
+  --login-card-border: rgba(200, 35, 26, .24);
+  --login-card-shadow: 0 0 0 1px rgba(255, 255, 255, .72) inset, 0 24px 80px rgba(67, 37, 39, .2), 0 0 30px rgba(200, 35, 26, .09);
+  --login-input-text: #29252a;
+  --login-placeholder: #77717a;
+  --login-input-icon: #706972;
+  --login-input-border: rgba(96, 78, 83, .28);
+  --login-input-bg: linear-gradient(110deg, rgba(255, 255, 255, .86), rgba(255, 255, 255, .68));
+  --login-input-shadow: inset 0 1px 0 rgba(255, 255, 255, .8), 0 0 14px rgba(200, 35, 26, .045);
+  --login-focus-border: #c8231a;
+  --login-focus-shadow: 0 0 0 3px rgba(200, 35, 26, .12), 0 0 22px rgba(200, 35, 26, .15);
+  --login-action-bg: linear-gradient(105deg, #ed2b20 0%, #b91e18 55%, #df3025 100%);
+  --login-action-border: #c8231a;
+  --login-action-shadow: 0 8px 25px rgba(156, 31, 25, .25), inset 0 1px 0 rgba(255, 255, 255, .22);
+  --login-action-hover-shadow: 0 11px 30px rgba(156, 31, 25, .34), inset 0 1px 0 rgba(255, 255, 255, .24);
+  --login-chart: #12151a;
+  --login-chart-glow: 0 0 1px rgba(18, 21, 26, .28), 0 0 7px rgba(18, 21, 26, .12);
+  --login-toggle-bg: rgba(255, 255, 255, .72);
+  --login-toggle-border: rgba(111, 94, 99, .28);
+  --login-toggle-text: #625d64;
+  --login-social-border: rgba(111, 94, 99, .28);
+  --login-social-text: #625d64;
+}
+
+:root[data-theme="dark"] body.app-patient {
+  --login-text: #f5f7ff;
+  --login-muted: #aeb5c2;
+  --login-link: #ff4a5d;
+  --login-link-hover: #ff7885;
+  --login-accent: #ff4659;
+  --login-card-border: rgba(255, 105, 123, .56);
+  --login-card-shadow: 0 0 0 1px rgba(255, 255, 255, .035) inset, 0 24px 80px rgba(0, 0, 0, .55), 0 0 28px rgba(217, 39, 60, .19);
+  --login-input-text: #f6f8fd;
+  --login-placeholder: #a8aab3;
+  --login-input-icon: #eef2fb;
+  --login-input-border: rgba(235, 238, 245, .24);
+  --login-input-bg: linear-gradient(110deg, rgba(255, 255, 255, .08), rgba(255, 255, 255, .035));
+  --login-input-shadow: inset 0 1px 0 rgba(255, 255, 255, .07), 0 0 14px rgba(255, 255, 255, .075);
+  --login-focus-border: rgba(255, 255, 255, .88);
+  --login-focus-shadow: 0 0 0 3px rgba(255, 255, 255, .12), 0 0 22px rgba(255, 255, 255, .23);
+  --login-action-bg: linear-gradient(105deg, #ff3349 0%, #bc172b 55%, #f22b40 100%);
+  --login-action-border: #ff5868;
+  --login-action-shadow: 0 8px 25px rgba(218, 28, 49, .32), inset 0 1px 0 rgba(255, 255, 255, .18);
+  --login-action-hover-shadow: 0 11px 31px rgba(233, 34, 55, .42), inset 0 1px 0 rgba(255, 255, 255, .2);
+  --login-chart: #f1f2f5;
+  --login-chart-glow: 0 0 7px rgba(255, 255, 255, .9), 0 0 18px rgba(255, 255, 255, .48), 0 0 34px rgba(255, 255, 255, .2);
+  --login-toggle-bg: rgba(9, 13, 22, .72);
+  --login-toggle-border: rgba(199, 214, 240, .24);
+  --login-toggle-text: #d9e4f6;
+  --login-social-border: rgba(209, 220, 239, .24);
+  --login-social-text: #f0f3fa;
+}
+
+body.app-patient .auth-main .auth::before {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: linear-gradient(145deg, rgba(255, 255, 255, .91), rgba(255, 250, 249, .86) 62%, rgba(253, 228, 225, .9));
+  content: "";
+  opacity: 1;
+  pointer-events: none;
+  transition: opacity .75s cubic-bezier(.2, .7, .2, 1);
+}
+
+body.app-patient .auth-main .auth { position: relative; isolation: isolate; }
+
+:root[data-theme="dark"] body.app-patient .auth-main .auth::before { opacity: 0; }
+
+body.app-patient .auth-main .auth,
+body.app-patient .auth-main .auth h1,
+body.app-patient .auth-main .auth h1 span,
+body.app-patient .auth-main .auth > p,
+body.app-patient .auth-main .auth a:not(.btn),
+body.app-patient .auth-main .auth .or-divider,
+body.app-patient .auth-main .auth .login-footer,
+body.app-patient .auth-main .auth .login-input-control,
+body.app-patient .auth-main .auth .login-input-control > svg,
+body.app-patient .auth-main .auth .login-input-control input,
+body.app-patient .auth-main .auth .login-input-control input::placeholder,
+body.app-patient .auth-main .auth .login-input-control .pw-toggle,
+body.app-patient .auth-main .auth .login-submit,
+body.app-patient .auth-main .auth .google-btn,
+body.app-patient .auth-main .auth .login-social a,
+body.app-patient .chart-mini,
+body.app-patient .auth-main .theme-toggle {
+  transition: color .65s ease, background-color .65s ease, border-color .65s ease, box-shadow .65s ease, text-shadow .65s ease, fill .65s ease, stroke .65s ease;
+}
+
+body.app-patient .auth-main .auth { border-color: var(--login-card-border); box-shadow: var(--login-card-shadow); }
+body.app-patient .auth-main .auth h1 { color: var(--login-text); }
+body.app-patient .auth-main .auth h1 span { color: var(--login-accent); }
+body.app-patient .auth-main .auth > p { color: var(--login-muted); }
+body.app-patient .auth-main .auth a:not(.btn) { color: var(--login-link); }
+body.app-patient .auth-main .auth a:not(.btn):hover { color: var(--login-link-hover); }
+body.app-patient .chart-mini { color: var(--login-chart); text-shadow: var(--login-chart-glow); }
+body.app-patient .auth-main .theme-toggle { background: var(--login-toggle-bg); border-color: var(--login-toggle-border); color: var(--login-toggle-text); }
+body.app-patient .auth-main .theme-toggle:hover { border-color: var(--login-accent); color: var(--login-accent); }
+body.app-patient .login-input-control { border-color: var(--login-input-border); background: var(--login-input-bg); box-shadow: var(--login-input-shadow); }
+body.app-patient .login-input-control:focus-within { border-color: var(--login-focus-border); box-shadow: var(--login-focus-shadow); }
+body.app-patient .login-input-control { transition: border-color .65s ease, box-shadow .65s ease, background .65s ease; }
+body.app-patient .login-input-control > svg { stroke: var(--login-input-icon); }
+body.app-patient .login-input-control input { color: var(--login-input-text); }
+body.app-patient .login-input-control input::placeholder { color: var(--login-placeholder); }
+body.app-patient .login-input-control .pw-toggle { color: var(--login-muted); }
+body.app-patient .login-input-control .pw-toggle:hover { color: var(--login-text); }
+body.app-patient .login-submit { border-color: var(--login-action-border); background: var(--login-action-bg); box-shadow: var(--login-action-shadow); }
+body.app-patient .login-submit { transition: transform .18s ease, box-shadow .65s ease, filter .2s ease, background .65s ease, border-color .65s ease, color .65s ease; }
+body.app-patient .auth .or-divider { color: var(--login-muted); }
+body.app-patient .auth .or-divider::before,
+body.app-patient .auth .or-divider::after { background: var(--login-toggle-border); }
+body.app-patient .auth .or-divider::before,
+body.app-patient .auth .or-divider::after { transition: background-color .65s ease; }
+body.app-patient .auth .google-btn { transition: transform .18s ease, box-shadow .2s ease, background .65s ease, color .65s ease, border-color .65s ease; }
+body.app-patient .auth .flash { transition: background-color .65s ease, border-color .65s ease, color .65s ease; }
+body.app-patient .auth > p.small.muted a { color: var(--login-muted); }
+body.app-patient .login-footer { color: var(--login-muted); transition: color .65s ease; }
+body.app-patient .login-social a { border-color: var(--login-social-border); color: var(--login-social-text); }
+body.app-patient .login-social a:hover { border-color: var(--login-accent); color: var(--login-accent); }
+body.app-patient .login-social a { transition: transform .18s ease, border-color .65s ease, color .65s ease, background-color .65s ease; }
+
+body.app-patient .login-emblem {
+  display: block;
+  width: 98px;
+  height: 98px;
+  margin: 0 auto 14px;
+  border-radius: 50%;
+  filter: drop-shadow(0 0 15px rgba(245, 49, 67, .25));
+  transition: transform .22s ease, filter .22s ease;
+}
+
+body.app-patient .login-emblem:hover {
+  transform: scale(1.035);
+  filter: drop-shadow(0 0 20px rgba(245, 49, 67, .42));
+}
+
+body.app-patient .login-emblem img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  animation: loginHawkFlight 4.2s ease-in-out infinite;
+  will-change: transform;
+}
+
+@keyframes loginHawkFlight {
+  0%, 100% { transform: translateY(0) rotate(0); }
+  30% { transform: translateY(-3px) rotate(-1deg); }
+  68% { transform: translateY(1px) rotate(.7deg); }
+}
+
+body.app-patient .auth h1 {
+  margin: 0 0 6px;
+  color: #f7f8fc;
+  font-size: clamp(30px, 4vw, 38px);
+  line-height: 1.08;
+  text-align: center;
+  letter-spacing: -.035em;
+}
+
+body.app-patient .auth h1 span {
+  color: #ff4659;
+}
+
+body.app-patient .auth > p.muted {
+  margin: 0 0 20px;
+  color: #aeb5c2;
+  font-size: 15px;
+  text-align: center;
+}
+
+body.app-patient .login-card {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+body.app-patient .login-card form {
+  display: grid;
+  gap: 12px;
+}
+
+body.app-patient .login-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  clip-path: inset(50%);
+}
+
+body.app-patient .login-input-control {
+  position: relative;
+  display: flex;
+  min-height: 54px;
+  align-items: center;
+  gap: 13px;
+  padding: 0 17px;
+  border: 1px solid rgba(235, 238, 245, .24);
+  border-radius: 999px;
+  background: linear-gradient(110deg, rgba(255, 255, 255, .08), rgba(255, 255, 255, .035));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .07), 0 0 14px rgba(255, 255, 255, .075);
+  transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
+}
+
+body.app-patient .login-input-control:focus-within {
+  border-color: rgba(255, 255, 255, .88);
+  background: rgba(255, 255, 255, .055);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, .12), 0 0 22px rgba(255, 255, 255, .23);
+}
+
+body.app-patient .login-input-control > svg {
+  width: 21px;
+  height: 21px;
+  flex: none;
+  fill: none;
+  stroke: #eef2fb;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+body.app-patient .login-input-control input {
+  width: 100%;
+  min-width: 0;
+  min-height: 52px;
+  padding: 8px 42px 8px 0;
+  border: 0;
+  border-radius: 0;
+  outline: 0;
+  background: transparent;
+  box-shadow: none;
+  color: #f6f8fd;
+  font-size: 16px;
+}
+
+body.app-patient .login-input-control input::placeholder {
+  color: #a8aab3;
+  opacity: 1;
+}
+
+body.app-patient .login-input-control input:focus-visible {
+  outline: none;
+}
+
+body.app-patient .login-input-control .pw-field {
+  min-width: 0;
+  flex: 1;
+  position: relative;
+}
+
+body.app-patient .login-input-control .pw-toggle {
+  color: #b6c0d0;
+}
+
+body.app-patient .login-input-control .pw-toggle:hover {
+  color: #fff;
+}
+
+body.app-patient .login-assistance {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  margin: -2px 2px 2px;
+  font-size: 13px;
+}
+
+body.app-patient .auth a:not(.btn) {
+  color: #ff4a5d;
+  font-weight: 700;
+}
+
+body.app-patient .auth a:not(.btn):hover {
+  color: #ff7885;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+body.app-patient .login-submit {
+  display: flex;
+  width: 100%;
+  min-height: 54px;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 2px !important;
+  border: 1px solid #ff5868;
+  border-radius: 999px;
+  background: linear-gradient(105deg, #ff3349 0%, #bc172b 55%, #f22b40 100%);
+  box-shadow: 0 8px 25px rgba(218, 28, 49, .32), inset 0 1px 0 rgba(255, 255, 255, .18);
+  color: #fff;
+  font-size: 17px;
+  transition: transform .18s ease, box-shadow .2s ease, filter .2s ease;
+}
+
+body.app-patient .login-submit svg {
+  width: 21px;
+  height: 21px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+body.app-patient .login-submit:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 11px 31px rgba(233, 34, 55, .42), inset 0 1px 0 rgba(255, 255, 255, .2);
+  filter: brightness(1.06);
+}
+
+body.app-patient .login-submit:active {
+  transform: translateY(1px) scale(.995);
+}
+
+body.app-patient .auth .or-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 16px 0 12px;
+  color: #aeb5c2;
+}
+
+body.app-patient .auth .or-divider::before,
+body.app-patient .auth .or-divider::after {
+  height: 1px;
+  background: rgba(210, 220, 240, .2);
+}
+
+body.app-patient .auth .google-btn {
+  min-height: 50px;
+  margin-bottom: 12px;
+  border: 1px solid rgba(255, 255, 255, .75);
+  border-radius: 999px;
+  background: linear-gradient(#fff, #eceef2);
+  color: #17191d;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, .2);
+  transition: transform .18s ease, box-shadow .2s ease, background .2s ease;
+}
+
+body.app-patient .auth .google-btn:hover {
+  transform: translateY(-1px);
+  background: #fff;
+  box-shadow: 0 9px 24px rgba(0, 0, 0, .3);
+}
+
+body.app-patient .auth > p:not(.muted):not(.small) {
+  margin: 12px 0;
+  color: #d1d5df;
+  text-align: center;
+}
+
+body.app-patient .auth > p.small.muted {
+  margin: 14px 0 0;
+  text-align: center;
+}
+
+body.app-patient .auth > p.small.muted a {
+  color: #aeb5c2;
+  font-weight: 400;
+}
+
+body.app-patient .auth .flash {
+  margin: 0 0 14px;
+  border-radius: 12px;
+}
+
+body.app-patient .login-footer {
+  width: min(520px, 100%);
+  margin: 16px auto 0;
+  color: #9da5b4;
+  text-align: center;
+}
+
+body.app-patient .login-social {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+body.app-patient .login-social a {
+  display: inline-grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border: 1px solid rgba(209, 220, 239, .24);
+  border-radius: 50%;
+  color: #f0f3fa;
+  transition: transform .18s ease, border-color .18s ease, color .18s ease;
+}
+
+body.app-patient .login-social a:hover {
+  transform: translateY(-2px);
+  border-color: #5a9df3;
+  color: #75b1ff;
+}
+
+body.app-patient .login-social svg {
+  width: 17px;
+  height: 17px;
+  fill: currentColor;
+}
+
+body.app-patient .login-footer p {
+  margin: 0;
+  font-size: 10px;
+  letter-spacing: .22em;
+  line-height: 1.6;
+  text-transform: uppercase;
+}
+
+@media (max-width: 700px) {
+  body.app-patient .chart-mini {
+    right: 8px;
+    opacity: .28;
+    transform: translateY(-50%) scale(.82);
+  }
+}
+
+@media (max-width: 520px) {
+  body.app-patient .auth-main {
+    padding: 68px 12px 20px;
+  }
+  body.app-patient .auth-main .toolbar {
+    top: 12px;
+    right: 14px;
+  }
+  body.app-patient .auth-main .auth {
+    padding: 22px 18px;
+    border-radius: 20px;
+  }
+  body.app-patient .login-emblem {
+    width: 78px;
+    height: 78px;
+    margin-bottom: 10px;
+  }
+  body.app-patient .auth h1 {
+    font-size: 31px;
+  }
+  body.app-patient .login-input-control {
+    min-height: 50px;
+    gap: 10px;
+    padding: 0 14px;
+  }
+  body.app-patient .login-input-control input {
+    min-height: 48px;
+    font-size: 16px;
+  }
+  body.app-patient .login-footer p {
+    font-size: 9px;
+    letter-spacing: .15em;
+  }
+}
+
+@media (max-height: 760px) and (min-width: 701px) {
+  body.app-patient .auth-main {
+    padding-top: 60px;
+    padding-bottom: 20px;
+  }
+  body.app-patient .auth-main .auth {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+  body.app-patient .login-emblem {
+    width: 76px;
+    height: 76px;
+    margin-bottom: 8px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.app-patient .login-emblem img {
+    animation: none;
+    will-change: auto;
+  }
+  body.app-patient .login-emblem,
+  body.app-patient .login-switch a,
+  body.app-patient .login-input-control,
+  body.app-patient .login-submit,
+  body.app-patient .auth .google-btn,
+  body.app-patient .login-social a {
+    transition: none;
+  }
+}
+
+/* Keep the patient login controls on the active theme palette. */
+body.app-patient .auth-main .auth .login-input-control {
+  border-color: var(--login-input-border);
+  background: var(--login-input-bg);
+  box-shadow: var(--login-input-shadow);
+  transition: border-color .65s ease, box-shadow .65s ease, background .65s ease;
+}
+
+body.app-patient .auth-main .auth .login-input-control:focus-within {
+  border-color: var(--login-focus-border);
+  box-shadow: var(--login-focus-shadow);
+}
+
+body.app-patient .auth-main .auth .login-input-control > svg { stroke: var(--login-input-icon); }
+body.app-patient .auth-main .auth .login-input-control input { color: var(--login-input-text); }
+body.app-patient .auth-main .auth .login-input-control input::placeholder { color: var(--login-placeholder); }
+body.app-patient .auth-main .auth .login-input-control .pw-toggle { color: var(--login-muted); }
+body.app-patient .auth-main .auth .login-input-control .pw-toggle:hover { color: var(--login-text); }
+
+body.app-patient .auth-main .auth .login-submit {
+  border-color: var(--login-action-border);
+  background: var(--login-action-bg);
+  box-shadow: var(--login-action-shadow);
+  transition: transform .18s ease, box-shadow .65s ease, filter .2s ease, background .65s ease, border-color .65s ease, color .65s ease;
+}
+
+body.app-patient .auth-main .auth .login-submit:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--login-action-hover-shadow);
+  filter: brightness(1.06);
+}
+
+body.app-patient .auth-main .auth .login-submit:active { transform: translateY(1px) scale(.995); }
+
+body.app-patient .auth-main .auth > p.small.muted a { color: var(--login-muted); }
+body.app-patient .auth-main .theme-toggle {
+  border-color: var(--login-toggle-border);
+  background: var(--login-toggle-bg);
+  color: var(--login-toggle-text);
+}
+
+body.app-patient .login-footer { color: var(--login-muted); }
+body.app-patient .login-social a { border-color: var(--login-social-border); color: var(--login-social-text); }
+
+@media (prefers-reduced-motion: reduce) {
+  body.app-patient .auth-split::before,
+  body.app-patient .auth-main .auth::before,
+  body.app-patient .auth-main .auth .login-input-control,
+  body.app-patient .auth-main .auth .login-submit {
+    transition: none !important;
+  }
+}
+
+@media (min-width: 701px) {
+  body.app-patient .auth-main {
+    min-height: 100vh;
+    min-height: 100svh;
+    justify-content: flex-start;
+    justify-content: safe center;
+    padding: clamp(20px, 3vh, 32px) 24px 20px;
+  }
+
+  body.app-patient .auth-main .toolbar { top: clamp(12px, 2vh, 20px); }
+
+  body.app-patient .auth-main .auth {
+    margin: 0 auto;
+    padding: clamp(24px, 3vw, 34px);
+  }
+
+  body.app-patient .login-emblem {
+    width: clamp(78px, 9vh, 96px);
+    height: clamp(78px, 9vh, 96px);
+    margin-bottom: clamp(8px, 1.3vh, 12px);
+  }
+
+  body.app-patient .login-footer { margin-top: 16px; }
+}
+
+/* Staff Login uses the same glass login treatment while retaining its own form and copy. */
+body.app-staff {
+  min-height: 100vh;
+  background: #080a10;
+  color: #f5f7ff;
+  --staff-text: #252128;
+  --staff-muted: #625d64;
+  --staff-link: #b01f17;
+  --staff-link-hover: #8f1c16;
+  --staff-accent: #c8231a;
+  --staff-card-border: rgba(200, 35, 26, .24);
+  --staff-card-shadow: 0 0 0 1px rgba(255, 255, 255, .72) inset, 0 24px 80px rgba(67, 37, 39, .2), 0 0 30px rgba(200, 35, 26, .09);
+  --staff-field-text: #29252a;
+  --staff-field-placeholder: #77717a;
+  --staff-field-border: rgba(96, 78, 83, .28);
+  --staff-field-bg: linear-gradient(110deg, rgba(255, 255, 255, .86), rgba(255, 255, 255, .68));
+  --staff-field-shadow: inset 0 1px 0 rgba(255, 255, 255, .8), 0 0 14px rgba(200, 35, 26, .045);
+  --staff-focus-border: #c8231a;
+  --staff-focus-shadow: 0 0 0 3px rgba(200, 35, 26, .12), 0 0 22px rgba(200, 35, 26, .15);
+  --staff-button-bg: linear-gradient(105deg, #ed2b20 0%, #b91e18 55%, #df3025 100%);
+  --staff-button-border: #c8231a;
+  --staff-button-shadow: 0 8px 25px rgba(156, 31, 25, .25), inset 0 1px 0 rgba(255, 255, 255, .22);
+  --staff-button-hover-shadow: 0 11px 30px rgba(156, 31, 25, .34), inset 0 1px 0 rgba(255, 255, 255, .24);
+  --staff-toggle-bg: rgba(255, 255, 255, .72);
+  --staff-toggle-border: rgba(111, 94, 99, .28);
+  --staff-toggle-text: #625d64;
+  --staff-side-text: #252128;
+  --staff-side-muted: #625d64;
+}
+
+:root[data-theme="dark"] body.app-staff {
+  --staff-text: #f5f7ff;
+  --staff-muted: #aeb5c2;
+  --staff-link: #ff4a5d;
+  --staff-link-hover: #ff7885;
+  --staff-accent: #ff4659;
+  --staff-card-border: rgba(255, 105, 123, .56);
+  --staff-card-shadow: 0 0 0 1px rgba(255, 255, 255, .035) inset, 0 24px 80px rgba(0, 0, 0, .55), 0 0 28px rgba(217, 39, 60, .19);
+  --staff-field-text: #f6f8fd;
+  --staff-field-placeholder: #a8aab3;
+  --staff-field-border: rgba(235, 238, 245, .24);
+  --staff-field-bg: linear-gradient(110deg, rgba(255, 255, 255, .08), rgba(255, 255, 255, .035));
+  --staff-field-shadow: inset 0 1px 0 rgba(255, 255, 255, .07), 0 0 14px rgba(255, 255, 255, .075);
+  --staff-focus-border: rgba(255, 255, 255, .88);
+  --staff-focus-shadow: 0 0 0 3px rgba(255, 255, 255, .12), 0 0 22px rgba(255, 255, 255, .23);
+  --staff-button-bg: linear-gradient(105deg, #ff3349 0%, #bc172b 55%, #f22b40 100%);
+  --staff-button-border: #ff5868;
+  --staff-button-shadow: 0 8px 25px rgba(218, 28, 49, .32), inset 0 1px 0 rgba(255, 255, 255, .18);
+  --staff-button-hover-shadow: 0 11px 31px rgba(233, 34, 55, .42), inset 0 1px 0 rgba(255, 255, 255, .2);
+  --staff-toggle-bg: rgba(9, 13, 22, .72);
+  --staff-toggle-border: rgba(199, 214, 240, .24);
+  --staff-toggle-text: #d9e4f6;
+  --staff-side-text: #f5f7ff;
+  --staff-side-muted: #b7bdc8;
+}
+
+body.app-staff .auth-split {
+  position: relative;
+  display: block;
+  min-height: 100vh;
+  min-height: 100svh;
+  overflow-x: clip;
+  isolation: isolate;
+  background:
+    radial-gradient(ellipse at 15% 16%, rgba(32, 77, 136, .25), transparent 42%),
+    radial-gradient(ellipse at 88% 80%, rgba(22, 46, 82, .36), transparent 48%),
+    radial-gradient(ellipse at 50% 48%, rgba(69, 29, 42, .22), transparent 56%),
+    linear-gradient(145deg, #111722 0%, #080a10 54%, #120c13 100%);
+}
+
+body.app-staff .auth-split::before {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse at 15% 16%, rgba(224, 237, 255, .93), transparent 44%),
+    radial-gradient(ellipse at 88% 80%, rgba(230, 239, 251, .96), transparent 50%),
+    linear-gradient(145deg, #f4f7fc 0%, #edf1f7 54%, #f6eeee 100%);
+  content: "";
+  opacity: 1;
+  pointer-events: none;
+  transition: opacity .85s cubic-bezier(.2, .7, .2, 1);
+}
+
+:root[data-theme="dark"] body.app-staff .auth-split::before { opacity: 0; }
+
+body.app-staff .auth-side {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: block;
+  overflow: hidden;
+  padding: 0;
+  background: transparent;
+  pointer-events: none;
+}
+
+body.app-staff .auth-side .brand-lockup { display: none; }
+
+body.app-staff .auth-side .tagline {
+  position: absolute;
+  top: 43%;
+  left: clamp(24px, 4vw, 60px);
+  width: min(260px, calc((100vw - 680px) / 2));
+  margin: 0;
+  color: var(--staff-side-text);
+  font-size: clamp(20px, 2.4vw, 32px);
+  line-height: 1.12;
+  text-shadow: 0 1px 14px rgba(43, 62, 91, .14);
+  transform: translateY(-50%);
+}
+
+body.app-staff .auth-side .fine {
+  position: absolute;
+  bottom: clamp(28px, 6vh, 68px);
+  left: clamp(24px, 4vw, 60px);
+  width: min(280px, calc((100vw - 680px) / 2));
+  margin: 0;
+  color: var(--staff-side-muted);
+  line-height: 1.55;
+  text-shadow: 0 1px 12px rgba(43, 62, 91, .12);
+}
+
+body.app-staff .auth-main {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  min-height: 100vh;
+  min-height: 100svh;
+  align-items: center;
+  justify-content: flex-start;
+  justify-content: safe center;
+  padding: clamp(20px, 3vh, 32px) 24px 20px;
+}
+
+body.app-staff .auth-main .toolbar {
+  position: absolute;
+  top: clamp(12px, 2vh, 20px);
+  right: clamp(16px, 3vw, 36px);
+  min-height: 0;
+}
+
+body.app-staff .auth-main .theme-toggle {
+  border-color: var(--staff-toggle-border);
+  background: var(--staff-toggle-bg);
+  color: var(--staff-toggle-text);
+  backdrop-filter: blur(12px);
+  transition: color .65s ease, background-color .65s ease, border-color .65s ease, box-shadow .65s ease;
+}
+
+body.app-staff .auth-main .theme-toggle:hover { border-color: var(--staff-accent); color: var(--staff-accent); }
+
+body.app-staff .auth-main .auth {
+  position: relative;
+  isolation: isolate;
+  width: min(100%, 520px);
+  max-width: 520px;
+  margin: 0 auto;
+  padding: clamp(24px, 3vw, 34px);
+  border: 1px solid var(--staff-card-border);
+  border-radius: 24px;
+  background: linear-gradient(145deg, rgba(20, 20, 29, .88), rgba(8, 10, 16, .84) 62%, rgba(28, 11, 17, .86));
+  box-shadow: var(--staff-card-shadow);
+  backdrop-filter: blur(22px) saturate(125%);
+  color: var(--staff-text);
+  transition: color .65s ease, border-color .65s ease, box-shadow .65s ease;
+}
+
+body.app-staff .auth-main .auth::before {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: linear-gradient(145deg, rgba(255, 255, 255, .91), rgba(255, 250, 249, .86) 62%, rgba(253, 228, 225, .9));
+  content: "";
+  opacity: 1;
+  pointer-events: none;
+  transition: opacity .75s cubic-bezier(.2, .7, .2, 1);
+}
+
+:root[data-theme="dark"] body.app-staff .auth-main .auth::before { opacity: 0; }
+body.app-staff .auth-main .auth .brand-lockup { display: flex; justify-content: center; margin: 0 auto 16px; color: var(--staff-text); }
+body.app-staff .auth-main .auth .brand-name small { color: var(--staff-muted); }
+body.app-staff .auth-main .auth h1 { margin: 0 0 6px; color: var(--staff-text); font-size: clamp(30px, 4vw, 38px); line-height: 1.08; text-align: center; letter-spacing: -.035em; }
+body.app-staff .auth-main .auth > p.muted { margin: 0 0 20px; color: var(--staff-muted); font-size: 15px; text-align: center; }
+body.app-staff .auth-main .auth > p:not(.muted):not(.small) { margin: 12px 0; color: var(--staff-muted); text-align: center; }
+body.app-staff .auth-main .auth > p.small.muted { margin: 14px 0 0; text-align: center; }
+body.app-staff .auth-main .auth .card { margin: 0; padding: 0; border: 0; background: transparent; box-shadow: none; }
+body.app-staff .auth-main .auth .card form { display: grid; gap: 0; }
+body.app-staff .auth-main .auth .card label { margin: 16px 0 7px; color: var(--staff-text); font-size: 14px; }
+body.app-staff .auth-main .auth .card label:first-of-type { margin-top: 0 !important; }
+
+body.app-staff .auth-main .auth .card input[type="email"],
+body.app-staff .auth-main .auth .card input[type="password"] {
+  min-height: 54px;
+  padding: 0 18px;
+  border: 1px solid var(--staff-field-border);
+  border-radius: 999px;
+  background: var(--staff-field-bg);
+  box-shadow: var(--staff-field-shadow);
+  color: var(--staff-field-text);
+  font-size: 16px;
+  transition: color .65s ease, background .65s ease, border-color .65s ease, box-shadow .65s ease;
+}
+
+body.app-staff .auth-main .auth .card input[type="email"]:focus,
+body.app-staff .auth-main .auth .card input[type="password"]:focus {
+  border-color: var(--staff-focus-border);
+  box-shadow: var(--staff-focus-shadow);
+}
+
+body.app-staff .auth-main .auth .card form > button.btn.primary {
+  width: 100%;
+  min-height: 54px;
+  margin-top: 20px !important;
+  border: 1px solid var(--staff-button-border);
+  border-radius: 999px;
+  background: var(--staff-button-bg);
+  box-shadow: var(--staff-button-shadow);
+  color: #fff;
+  font-size: 17px;
+  transition: transform .18s ease, box-shadow .65s ease, filter .2s ease, background .65s ease, border-color .65s ease;
+}
+
+body.app-staff .auth-main .auth .card form > button.btn.primary:hover { transform: translateY(-1px); box-shadow: var(--staff-button-hover-shadow); filter: brightness(1.06); }
+body.app-staff .auth-main .auth .card form > button.btn.primary:active { transform: translateY(1px) scale(.995); }
+body.app-staff .auth-main .auth .card p.small { margin: 12px 2px 0; text-align: right; }
+body.app-staff .auth-main .auth a:not(.btn) { color: var(--staff-link); transition: color .65s ease; }
+body.app-staff .auth-main .auth a:not(.btn):hover { color: var(--staff-link-hover); text-decoration: underline; text-underline-offset: 3px; }
+body.app-staff .auth-main .auth .flash { margin: 0 0 14px; border-radius: 12px; transition: background-color .65s ease, border-color .65s ease, color .65s ease; }
+
+@media (max-width: 1100px) {
+  body.app-staff .auth-side {
+    position: relative;
+    inset: auto;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    overflow: visible;
+    padding: 22px 24px 0;
+    pointer-events: auto;
+  }
+
+  body.app-staff .auth-side .tagline,
+  body.app-staff .auth-side .fine {
+    position: static;
+    width: auto;
+    max-width: 52ch;
+    text-align: center;
+    transform: none;
+  }
+
+  body.app-staff .auth-side .tagline { font-size: clamp(20px, 2.5vw, 28px); }
+  body.app-staff .auth-side .fine { color: var(--staff-side-muted); }
+  body.app-staff .auth-main { min-height: auto; padding: 24px 20px 32px; }
+}
+
+@media (max-width: 700px) {
+  body.app-staff .auth-side { gap: 7px; padding: 18px 16px 0; }
+  body.app-staff .auth-side .tagline { font-size: 21px; }
+  body.app-staff .auth-side .fine { font-size: 13px; }
+  body.app-staff .auth-main { padding: 22px 12px 24px; }
+  body.app-staff .auth-main .toolbar { top: 12px; right: 14px; }
+  body.app-staff .auth-main .auth { padding: 22px 18px; border-radius: 20px; }
+  body.app-staff .auth-main .auth .brand-lockup { gap: 10px; margin-bottom: 14px; }
+  body.app-staff .auth-main .auth h1 { font-size: 31px; }
+  body.app-staff .auth-main .auth .card input[type="email"],
+  body.app-staff .auth-main .auth .card input[type="password"] { min-height: 50px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.app-staff .auth-split::before,
+  body.app-staff .auth-main .auth::before,
+  body.app-staff .auth-main .auth .card input,
+  body.app-staff .auth-main .auth .card form > button.btn.primary,
+  body.app-staff .auth-main .theme-toggle,
+  body.app-staff .auth-main .auth a:not(.btn) { transition: none !important; }
+}

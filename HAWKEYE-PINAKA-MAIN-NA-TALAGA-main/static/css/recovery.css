@@ -1,0 +1,248 @@
+/* Shared presentation for the public email recovery screens. */
+body.auth-recovery {
+  --recovery-text: #24242b;
+  --recovery-muted: #625f69;
+  --recovery-link: #b01f17;
+  --recovery-link-hover: #8f1c16;
+  --recovery-card-border: rgba(200, 35, 26, .24);
+  --recovery-card-shadow: 0 0 0 1px rgba(255, 255, 255, .7) inset, 0 24px 80px rgba(31, 42, 62, .2), 0 0 32px rgba(200, 35, 26, .08);
+  --recovery-field-text: #29252a;
+  --recovery-field-placeholder: #77717a;
+  --recovery-field-border: rgba(96, 78, 83, .28);
+  --recovery-field-bg: linear-gradient(110deg, rgba(255, 255, 255, .88), rgba(255, 255, 255, .7));
+  --recovery-field-shadow: inset 0 1px 0 rgba(255, 255, 255, .82), 0 0 16px rgba(81, 145, 231, .07);
+  --recovery-focus-border: #c8231a;
+  --recovery-focus-shadow: 0 0 0 3px rgba(200, 35, 26, .12), 0 0 22px rgba(82, 145, 231, .16);
+  --recovery-action-bg: linear-gradient(105deg, #ed2b20 0%, #b91e18 55%, #df3025 100%);
+  --recovery-action-border: #c8231a;
+  --recovery-action-shadow: 0 8px 25px rgba(156, 31, 25, .25), inset 0 1px 0 rgba(255, 255, 255, .22);
+  --recovery-action-hover-shadow: 0 11px 30px rgba(156, 31, 25, .34), inset 0 1px 0 rgba(255, 255, 255, .24);
+  --recovery-toggle-bg: rgba(255, 255, 255, .72);
+  --recovery-toggle-border: rgba(111, 118, 135, .28);
+  --recovery-toggle-text: #625f69;
+  position: relative;
+  display: grid;
+  min-height: 100vh;
+  min-height: 100svh;
+  place-items: center;
+  box-sizing: border-box;
+  margin: 0;
+  padding: clamp(76px, 10vh, 100px) 20px 32px;
+  overflow-x: hidden;
+  background:
+    radial-gradient(ellipse at 15% 16%, rgba(32, 77, 136, .25), transparent 42%),
+    radial-gradient(ellipse at 88% 80%, rgba(22, 46, 82, .36), transparent 48%),
+    radial-gradient(ellipse at 50% 48%, rgba(69, 29, 42, .22), transparent 56%),
+    linear-gradient(145deg, #111722 0%, #080a10 54%, #120c13 100%);
+  color: #f5f7ff;
+}
+
+:root[data-theme="dark"] body.auth-recovery {
+  --recovery-text: #f5f7ff;
+  --recovery-muted: #aeb7c8;
+  --recovery-link: #ff5968;
+  --recovery-link-hover: #ff8290;
+  --recovery-card-border: rgba(255, 105, 123, .5);
+  --recovery-card-shadow: 0 0 0 1px rgba(255, 255, 255, .035) inset, 0 24px 80px rgba(0, 0, 0, .55), 0 0 30px rgba(44, 112, 205, .16), 0 0 24px rgba(217, 39, 60, .14);
+  --recovery-field-text: #f6f8fd;
+  --recovery-field-placeholder: #a8afbd;
+  --recovery-field-border: rgba(220, 230, 246, .24);
+  --recovery-field-bg: linear-gradient(110deg, rgba(255, 255, 255, .085), rgba(255, 255, 255, .035));
+  --recovery-field-shadow: inset 0 1px 0 rgba(255, 255, 255, .07), 0 0 15px rgba(83, 150, 239, .09);
+  --recovery-focus-border: rgba(133, 186, 255, .9);
+  --recovery-focus-shadow: 0 0 0 3px rgba(75, 145, 237, .17), 0 0 24px rgba(75, 145, 237, .22);
+  --recovery-action-bg: linear-gradient(105deg, #ff3349 0%, #bc172b 55%, #f22b40 100%);
+  --recovery-action-border: #ff5868;
+  --recovery-action-shadow: 0 8px 25px rgba(218, 28, 49, .32), inset 0 1px 0 rgba(255, 255, 255, .18);
+  --recovery-action-hover-shadow: 0 11px 31px rgba(233, 34, 55, .42), inset 0 1px 0 rgba(255, 255, 255, .2);
+  --recovery-toggle-bg: rgba(9, 13, 22, .72);
+  --recovery-toggle-border: rgba(199, 214, 240, .24);
+  --recovery-toggle-text: #d9e4f6;
+}
+
+body.auth-recovery::before {
+  position: fixed;
+  z-index: 0;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 15% 16%, rgba(224, 237, 255, .93), transparent 44%),
+    radial-gradient(ellipse at 88% 80%, rgba(230, 239, 251, .96), transparent 50%),
+    linear-gradient(145deg, #f4f7fc 0%, #edf1f7 54%, #f6eeee 100%);
+  content: "";
+  opacity: 1;
+  pointer-events: none;
+  transition: opacity .85s cubic-bezier(.2, .7, .2, 1);
+}
+
+:root[data-theme="dark"] body.auth-recovery::before { opacity: 0; }
+
+body.auth-recovery .theme-toggle {
+  z-index: 5;
+  border-color: var(--recovery-toggle-border);
+  background: var(--recovery-toggle-bg);
+  color: var(--recovery-toggle-text);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .12);
+  backdrop-filter: blur(12px);
+  transition: color .65s ease, background-color .65s ease, border-color .65s ease, box-shadow .65s ease;
+}
+
+body.auth-recovery .theme-toggle:hover { border-color: #5b9cf0; color: var(--recovery-text); }
+
+body.auth-recovery .recovery-card {
+  position: relative;
+  z-index: 1;
+  isolation: isolate;
+  width: min(100%, 520px);
+  max-width: 520px;
+  margin: auto;
+  padding: clamp(26px, 4vw, 38px);
+  border: 1px solid var(--recovery-card-border);
+  border-radius: 24px;
+  background: linear-gradient(145deg, rgba(19, 22, 31, .9), rgba(8, 10, 16, .86) 62%, rgba(20, 14, 21, .88));
+  box-shadow: var(--recovery-card-shadow);
+  color: var(--recovery-text);
+  backdrop-filter: blur(22px) saturate(125%);
+  transition: color .65s ease, border-color .65s ease, box-shadow .65s ease;
+}
+
+body.auth-recovery .recovery-card::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(145deg, rgba(255, 255, 255, .94), rgba(248, 250, 255, .89) 62%, rgba(231, 239, 250, .94));
+  content: "";
+  opacity: 1;
+  pointer-events: none;
+  transition: opacity .75s cubic-bezier(.2, .7, .2, 1);
+}
+
+:root[data-theme="dark"] body.auth-recovery .recovery-card::before { opacity: 0; }
+
+body.auth-recovery .recovery-card .brand-lockup {
+  display: flex;
+  justify-content: center;
+  margin: 0 auto 22px;
+  color: var(--recovery-text);
+}
+
+body.auth-recovery .recovery-card .brand-name small { color: var(--recovery-muted); }
+
+body.auth-recovery .recovery-card h1 {
+  margin: 0 0 10px;
+  color: var(--recovery-text);
+  font-size: clamp(30px, 5vw, 38px);
+  line-height: 1.1;
+  text-align: center;
+  letter-spacing: -.035em;
+  text-wrap: balance;
+  transition: color .65s ease;
+}
+
+body.auth-recovery .recovery-card > p.muted {
+  margin: 0 0 22px;
+  color: var(--recovery-muted);
+  font-size: 15px;
+  text-align: center;
+  transition: color .65s ease;
+}
+
+body.auth-recovery .recovery-card .card {
+  margin: 22px 0 18px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+body.auth-recovery .recovery-card form { display: grid; }
+
+body.auth-recovery .recovery-card label {
+  margin: 0 0 8px;
+  color: var(--recovery-text);
+  font-size: 14px;
+  transition: color .65s ease;
+}
+
+body.auth-recovery .recovery-card input[type="email"] {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 54px;
+  padding: 0 18px;
+  border: 1px solid var(--recovery-field-border);
+  border-radius: 999px;
+  outline: none;
+  background: var(--recovery-field-bg);
+  box-shadow: var(--recovery-field-shadow);
+  color: var(--recovery-field-text);
+  font: inherit;
+  font-size: 16px;
+  transition: color .65s ease, background .65s ease, border-color .65s ease, box-shadow .65s ease;
+}
+
+body.auth-recovery .recovery-card input[type="email"]::placeholder { color: var(--recovery-field-placeholder); }
+
+body.auth-recovery .recovery-card input[type="email"]:focus-visible {
+  border-color: var(--recovery-focus-border);
+  box-shadow: var(--recovery-focus-shadow);
+}
+
+body.auth-recovery .recovery-card form > button.btn.primary {
+  width: 100%;
+  min-height: 54px;
+  margin-top: 22px;
+  border: 1px solid var(--recovery-action-border);
+  border-radius: 999px;
+  background: var(--recovery-action-bg);
+  box-shadow: var(--recovery-action-shadow);
+  color: #fff;
+  font-size: 17px;
+  transition: transform .18s ease, box-shadow .65s ease, filter .2s ease, background .65s ease, border-color .65s ease;
+}
+
+body.auth-recovery .recovery-card form > button.btn.primary:hover { transform: translateY(-1px); box-shadow: var(--recovery-action-hover-shadow); filter: brightness(1.06); }
+body.auth-recovery .recovery-card form > button.btn.primary:active { transform: translateY(1px) scale(.995); }
+body.auth-recovery .recovery-card form > button.btn.primary:focus-visible { outline: 3px solid rgba(102, 166, 247, .55); outline-offset: 3px; }
+
+body.auth-recovery .recovery-card .recovery-back {
+  display: block;
+  width: fit-content;
+  margin: 20px auto 0;
+  color: var(--recovery-link);
+  font-weight: 700;
+  text-align: center;
+  text-decoration: none;
+  text-underline-offset: 4px;
+  transition: color .65s ease;
+}
+
+body.auth-recovery .recovery-card .recovery-back:hover { color: var(--recovery-link-hover); text-decoration: underline; }
+body.auth-recovery .recovery-card a:focus-visible { outline: 3px solid rgba(102, 166, 247, .55); outline-offset: 4px; border-radius: 4px; }
+
+body.auth-recovery .recovery-card .flash {
+  margin: 14px 0;
+  border-radius: 12px;
+  transition: color .65s ease, background-color .65s ease, border-color .65s ease;
+}
+
+@media (max-width: 600px) {
+  body.auth-recovery { padding: 72px 14px 24px; }
+  body.auth-recovery .theme-toggle.floating { top: 12px; right: 12px; }
+  body.auth-recovery .recovery-card { padding: 24px 19px; border-radius: 20px; }
+  body.auth-recovery .recovery-card .brand-lockup { margin-bottom: 18px; }
+  body.auth-recovery .recovery-card h1 { font-size: 31px; }
+  body.auth-recovery .recovery-card .card { margin-top: 18px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.auth-recovery::before,
+  body.auth-recovery .theme-toggle,
+  body.auth-recovery .recovery-card,
+  body.auth-recovery .recovery-card::before,
+  body.auth-recovery .recovery-card h1,
+  body.auth-recovery .recovery-card > p,
+  body.auth-recovery .recovery-card label,
+  body.auth-recovery .recovery-card input,
+  body.auth-recovery .recovery-card button,
+  body.auth-recovery .recovery-card a { transition: none !important; }
+}
